@@ -24,6 +24,7 @@ class WordleGameBackend {
             'PEACE', 'QUEST', 'RIGHT', 'SMILE', 'TRUTH', 'UNION', 'VOICE', 'WOMAN',
             'CRANE', 'SLATE', 'ADIEU', 'AUDIO', 'RAISE', 'AROSE', 'STARE', 'TEARS',
             'REACT', 'TRACE', 'CRATE', 'CARET', 'CATER', 'ALTER', 'LATER', 'ALERT',
+            'THISS', 'THING', 'THINK', 'THIRD', 'THOSE', 'THREE', 'THREW', 'THROW',
             'BLADE', 'BLAME', 'BLANK', 'BLIND', 'BLOCK', 'BLOOD', 'BOARD', 'BOOST',
             'BOUND', 'BRAVE', 'BREAK', 'BREED', 'BRICK', 'BRIDE', 'BRING', 'BROAD',
             'BROKE', 'BROWN', 'BUILD', 'BUILT', 'CABLE', 'CARRY', 'CATCH', 'CAUSE',
@@ -272,6 +273,8 @@ class WordleGameBackend {
     }
     
     submitGuess() {
+        console.log('Submitting guess:', this.currentGuess);
+        
         if (!this.gameStarted || this.gameOver) return;
         
         if (this.currentGuess.length !== this.wordLength) {
@@ -280,10 +283,13 @@ class WordleGameBackend {
         }
         
         if (!this.isValidWord(this.currentGuess)) {
+            console.log('Invalid word:', this.currentGuess);
             this.showMessage('Not a valid word', 'error');
             this.shakeCurrentRow();
             return;
         }
+        
+        console.log('Valid word, proceeding with evaluation');
         
         // Evaluate the guess
         const evaluation = this.evaluateGuess(this.currentGuess, this.secretWord);
