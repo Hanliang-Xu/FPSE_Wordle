@@ -1,0 +1,11 @@
+(test
+  (name wordle_tests)
+  (modules wordle_tests)
+  (libraries
+    core
+    ounit2
+    lib
+    base_quickcheck
+  )
+  (deps (file ../src/bin/wordle.exe) (glob_files_rec ../test/**))
+  (preprocess (pps ppx_jane)))

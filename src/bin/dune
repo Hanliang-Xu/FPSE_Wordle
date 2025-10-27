@@ -1,0 +1,10 @@
+(executable
+  (name wordle)
+  (modules wordle)
+  (libraries
+    core
+    cmdliner
+    lib)
+  (preprocess (pps ppx_jane))
+  (promote
+    (until-clean)))
