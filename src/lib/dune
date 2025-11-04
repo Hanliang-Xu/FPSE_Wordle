@@ -1,6 +1,6 @@
 (library
   (name lib)
-  (modules utils feedback)
+  (modules utils feedback dict)
   (libraries core)
   (preprocess (pps ppx_jane bisect_ppx))
 )
