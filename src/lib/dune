@@ -1,6 +1,7 @@
 (library
   (name lib)
-  (modules_without_implementation utils feedback game wordle solver solver)
+  (modules dict feedback game utils solver wordle_functor)
   (libraries core)
   (preprocess (pps ppx_jane bisect_ppx))
+  (flags (:standard -w -27-67))
 )

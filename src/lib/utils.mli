@@ -1,7 +1,14 @@
-val validate_length : word_length:int -> string -> bool
-(** [validate_length ~word_length s] returns true if [s] has length equal to [word_length] *)
+(** Utils module for Wordle game *)
 
-val validate_guess : word_length:int -> string -> (string, string) result
-(** [validate_guess ~word_length s] returns [Ok s] if valid, 
-    [Error msg] if [s] doesn't have length [word_length] *)
+module type Config = sig
+  val word_length : int
+end
+
+module Make (C : Config) : sig
+  val validate_length : string -> bool
+  (** [validate_length s] returns true if [s] has the correct word length *)
+  
+  val validate_guess : string -> (string, string) result
+  (** [validate_guess s] returns [Ok s] if valid, [Error msg] if invalid length *)
+end
 
