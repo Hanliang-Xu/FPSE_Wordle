@@ -1,6 +1,6 @@
 (library
   (name lib)
-  (modules utils feedback game wordle)
+  (modules_without_implementation utils feedback game wordle solver solver)
   (libraries core)
   (preprocess (pps ppx_jane bisect_ppx))
 )
