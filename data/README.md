@@ -2,6 +2,8 @@
 
 This directory contains word dictionaries for the Wordle game, organized by word length (2-10 letters).
 
+The dictionary module provides **a list of words of variable length with supporting functions** for loading, filtering, validating, and selecting words from these dictionaries.
+
 ## File Structure
 
 For each word length (2-10), there are two files:

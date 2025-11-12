@@ -1,15 +1,20 @@
-(** Dictionary module for loading and managing word lists 
+(** Dictionary module for loading and managing word lists of variable length (2-10 letters)
+    
+    This module provides functions to work with a list of words of variable length
+    with supporting functions for loading, filtering, validating, and selecting words.
     
     Important Notes:
-    - answers.txt 是 words.txt 的子集
+    - answers.txt is the subset of words.txt
       All words in answers.txt are also present in words.txt.
       Players can guess any word from words.txt, but answers are only 
       selected from answers.txt.
     
-    - answers.txt 包含常见/公平的单词
+    - answers.txt include common/fair words
       answers.txt contains only common/fair words to ensure a fair and 
       enjoyable game experience. words.txt can include more obscure words 
       that players can use for strategic guessing.
+    
+    Supported word lengths: 2, 3, 4, 5, 6, 7, 8, 9, 10 letters
 *)
 
 val load_dictionary : string -> string list
