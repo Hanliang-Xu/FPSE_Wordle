@@ -1,10 +1,6 @@
 (library
   (name lib)
-<<<<<<< HEAD
-  (modules utils feedback dict)
-=======
-  (modules utils feedback game wordle)
->>>>>>> 1c903f8b08bd25af16b9d66bfce3dafe478588d9
+  (modules utils feedback dict game wordle)
   (libraries core)
   (preprocess (pps ppx_jane bisect_ppx))
 )
