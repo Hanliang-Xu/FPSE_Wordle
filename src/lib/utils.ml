@@ -1,6 +1,11 @@
-let validate_length ~word_length s = String.length s = word_length
+(** Utils module implementation - stub for now *)
 
-let validate_guess ~word_length s =
-  if validate_length ~word_length s then Ok s
-  else Error (Printf.sprintf "Guess must be %d characters long" word_length)
+module type Config = sig
+  val word_length : int
+end
+
+module Make (C : Config) = struct
+  let validate_length _s = failwith "Not implemented"
+  let validate_guess _s = failwith "Not implemented"
+end
 
