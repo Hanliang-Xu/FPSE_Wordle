@@ -1,6 +1,10 @@
 (library
   (name lib)
+<<<<<<< HEAD
+  (modules utils feedback dict game wordle)
+=======
   (modules dict feedback game utils solver wordle_functor)
+>>>>>>> main
   (libraries core)
   (preprocess (pps ppx_jane bisect_ppx))
   (flags (:standard -w -27-67))
