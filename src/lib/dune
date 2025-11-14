@@ -1,14 +1,6 @@
 (library
   (name lib)
-<<<<<<< HEAD
-<<<<<<< HEAD
-  (modules utils feedback game wordle dict)
-=======
-  (modules utils feedback game wordle)
->>>>>>> d1795e201538455332fc9ee98fba90ccb394076b
-=======
   (modules dict feedback game utils solver wordle_functor)
->>>>>>> 6400170fde86e4f55fcf0cdd75615605034505a7
   (libraries core)
   (preprocess (pps ppx_jane bisect_ppx))
   (flags (:standard -w -27-67))
