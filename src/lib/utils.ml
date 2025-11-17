@@ -1,8 +1,6 @@
 (** Utils module implementation - stub for now *)
 
-module type Config = sig
-  val word_length : int
-end
+open Config
 
 module Make (C : Config) = struct
   let validate_length _s = failwith "Not implemented"

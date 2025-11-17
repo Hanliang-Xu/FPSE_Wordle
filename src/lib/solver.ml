@@ -1,10 +1,6 @@
 (** Solver module implementation - stub for now *)
 
-module type Feedback = sig
-  type color = Green | Yellow | Grey
-end
-
-module Make (F : Feedback) = struct
+module Make (G : Guess.S) = struct
   type t = string list
 
   let create word_list = word_list

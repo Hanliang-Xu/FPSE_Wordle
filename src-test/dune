@@ -11,6 +11,17 @@
   (preprocess (pps ppx_jane)))
 
 (test
+  (name dict_tests)
+  (modules dict_tests)
+  (libraries
+    core
+    ounit2
+    lib
+  )
+  (deps (glob_files_rec ../data/**))
+  (preprocess (pps ppx_jane)))
+
+(test
   (name feedback_test)
   (modules feedback_test)
   (libraries

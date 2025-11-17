@@ -1,8 +1,6 @@
 (** Utils module for Wordle game *)
 
-module type Config = sig
-  val word_length : int
-end
+open Config
 
 module Make (C : Config) : sig
   val validate_length : string -> bool

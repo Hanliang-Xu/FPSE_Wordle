@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 (** Feedback module implementation *)
 
 module type Config = sig
@@ -63,4 +64,12 @@ module Make (C : Config) = struct
   let to_string { guess; colors } =
     Printf.sprintf "%s: %s" guess (colors_to_string colors)
 end
+=======
+(** Feedback module - defines types for Wordle feedback *)
 
+type color = Green | Yellow | Grey
+type t = color list
+type feedback = {
+    guess : string;
+    colors : t;
+}
