@@ -1,35 +1,19 @@
-(** Configuration module type for Wordle functor *)
-module type Config = sig
-  val word_length : int
-end
-
 (** Functor that creates a Wordle game module for a specific word length.
     This functor composes the Feedback, Game, Utils, and Solver modules.
     The implementation is in wordle.ml, which instantiates the functors from
     feedback.mli, game.mli, utils.mli, and solver.mli. *)
-module Make (C : Config) : sig
+module Make (C : Config.Config) : sig
+  open Feedback
+  
   val word_length : int
   (** The configured word length for this Wordle instance *)
 
-  module Feedback : sig
-    type color = Green | Yellow | Grey
-    type t = color list
-    type feedback = {
-      guess : string;
-      colors : t;
-    }
-    
-    val generate : string -> string -> t
-    val make_feedback : string -> string -> feedback
-    val is_correct : feedback -> bool
-    val color_to_string : color -> string
-    val to_string : feedback -> string
-    val colors_to_string : t -> string
-  end
+  module Guess : Guess.S
+  (** The Guess module for generating feedback *)
 
   module Game : sig
     type t = {
-      board : Feedback.feedback list;
+      board : feedback list;
       max_guesses : int;
     }
     
