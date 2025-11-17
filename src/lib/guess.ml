@@ -53,7 +53,8 @@ module Make (C : Config) : S = struct
 
   let make_feedback guess answer = { guess; colors = generate guess answer }
 
-  let is_correct { colors; _ } = List.for_all colors ~f:(fun c -> match c with Green -> true | _ -> false)
+  let is_correct { colors; _ } =
+    List.for_all colors ~f:(function Green -> true | _ -> false)
 
   let color_to_string = function
     | Green -> "G"

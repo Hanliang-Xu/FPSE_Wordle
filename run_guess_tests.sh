@@ -1,9 +1,9 @@
 #!/bin/bash
-# Script to run feedback tests with coverage reporting
+# Script to run guess tests with coverage reporting
 
-echo "Building and running feedback tests..."
+echo "Building and running guess module tests..."
 dune clean
-dune runtest src-test/feedback_test.exe
+dune runtest src-test/guess_test.exe
 
 echo ""
 echo "Generating coverage report..."
@@ -15,5 +15,5 @@ bisect-ppx-report summary
 
 echo ""
 echo "Coverage report generated! Open _coverage/index.html to view detailed report."
-echo "Look for feedback.ml coverage in the report."
+echo "Look for guess.ml coverage in the report."
 

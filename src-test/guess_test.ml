@@ -1,4 +1,4 @@
-(** Comprehensive test suite for Feedback module *)
+(** Comprehensive test suite for Guess module *)
 
 open Core
 open OUnit2
@@ -191,7 +191,7 @@ let test_generate_all_wrong_positions _ =
 
 (* Build the test suite *)
 let test_suite =
-  "Feedback Tests" >::: [
+  "Guess Module Tests" >::: [
     "test_generate_all_correct" >:: test_generate_all_correct;
     "test_generate_all_wrong" >:: test_generate_all_wrong;
     "test_generate_partial_matches" >:: test_generate_partial_matches;
