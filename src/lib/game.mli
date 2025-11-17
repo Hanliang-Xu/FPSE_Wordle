@@ -1,21 +1,8 @@
 (** Game module for Wordle game *)
 
-module type Config = sig
-  val word_length : int
-end
-
-module type Feedback = sig
-  type color = Green | Yellow | Grey
-  type t = color list
-  type feedback = {
-    guess : string;
-    colors : t;
-  }
-end
-
-module Make (C : Config) (F : Feedback) : sig
+module Make (G : Guess.S) : sig
   type t = {
-    board : F.feedback list;
+    board : G.feedback list;
     max_guesses : int;
   }
   (** The game state, containing the board (a list of rows, each with a guess and its feedback colors)
@@ -36,11 +23,11 @@ module Make (C : Config) (F : Feedback) : sig
   (** [is_won game_state] returns true if the last guess was correct
       (i.e., all colors in the last feedback are Green) *)
   
-  val get_board : t -> F.feedback list
+  val get_board : t -> G.feedback list
   (** [get_board game_state] returns the current board state,
       a list of all guesses made so far with their feedback *)
   
-  val last_feedback : t -> F.feedback option
+  val last_feedback : t -> G.feedback option
   (** [last_feedback game_state] returns the most recent guess and its feedback,
       or [None] if no guesses have been made yet *)
   

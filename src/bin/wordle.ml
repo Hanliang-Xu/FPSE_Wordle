@@ -39,7 +39,7 @@ let play_game ~answer ~max_guesses ~words_dict =
       (* Display final board *)
       let board = W.Game.get_board game_state in
       List.iter board ~f:(fun fb -> 
-        Printf.printf "%s\n" (W.Feedback.to_string fb)
+        Printf.printf "%s\n" (W.Guess.to_string fb)
       )
     ) else (
       (* Game still active - check if we can make a guess *)
@@ -59,7 +59,7 @@ let play_game ~answer ~max_guesses ~words_dict =
             loop game_state solver_state
           ) else (
             (* Generate feedback for the guess *)
-            let feedback = W.Feedback.make_feedback valid_guess answer in
+            let feedback = W.Guess.make_feedback valid_guess answer in
             
             (* Update game state with the new guess *)
             let new_game_state = W.Game.step game_state valid_guess in
@@ -71,7 +71,7 @@ let play_game ~answer ~max_guesses ~words_dict =
             Printf.printf "Guess %d/%d: %s\n" 
               (W.Game.num_guesses new_game_state)
               (W.Game.max_guesses new_game_state)
-              (W.Feedback.to_string feedback);
+              (W.Guess.to_string feedback);
             Printf.printf "Remaining guesses: %d\n" 
               (W.Game.remaining_guesses new_game_state);
             

@@ -1,21 +1,8 @@
 (** Game module implementation - stub for now *)
 
-module type Config = sig
-  val word_length : int
-end
-
-module type Feedback = sig
-  type color = Green | Yellow | Grey
-  type t = color list
-  type feedback = {
-    guess : string;
-    colors : t;
-  }
-end
-
-module Make (C : Config) (F : Feedback) = struct
+module Make (G : Guess.S) = struct
   type t = {
-    board : F.feedback list;
+    board : G.feedback list;
     max_guesses : int;
   }
 
