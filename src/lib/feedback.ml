@@ -6,4 +6,3 @@ type feedback = {
     guess : string;
     colors : t;
 }
-

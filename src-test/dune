@@ -20,3 +20,13 @@
   )
   (deps (glob_files_rec ../data/**))
   (preprocess (pps ppx_jane)))
+
+(test
+  (name guess_test)
+  (modules guess_test)
+  (libraries
+    core
+    ounit2
+    lib
+  )
+  (preprocess (pps ppx_jane)))
