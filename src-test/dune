@@ -9,3 +9,13 @@
   )
   (deps (file ../src/bin/wordle.exe) (glob_files_rec ../test/**))
   (preprocess (pps ppx_jane)))
+
+(test
+  (name feedback_test)
+  (modules feedback_test)
+  (libraries
+    core
+    ounit2
+    lib
+  )
+  (preprocess (pps ppx_jane)))
