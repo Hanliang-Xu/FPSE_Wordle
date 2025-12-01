@@ -33,19 +33,40 @@ let prompt_bool ~default prompt =
         default
       )
 
+(** Prompt user for feedback granularity *)
+let prompt_feedback_granularity () =
+  Printf.printf "Feedback mode:\n";
+  Printf.printf "  1. Three-state (Green/Yellow/Grey) - standard Wordle\n";
+  Printf.printf "  2. Binary (Green/Grey only) - harder mode\n";
+  Printf.printf "Choose [default: 1]: ";
+  Out_channel.flush stdout;
+  match In_channel.input_line In_channel.stdin with
+  | None -> Lib.Config.ThreeState
+  | Some input ->
+      let trimmed = String.strip input in
+      if String.is_empty trimmed then Lib.Config.ThreeState
+      else if String.equal trimmed "1" then Lib.Config.ThreeState
+      else if String.equal trimmed "2" then Lib.Config.Binary
+      else (
+        Printf.printf "Invalid input. Using default: Three-state\n";
+        Lib.Config.ThreeState
+      )
+
 (** Get configuration from user input *)
 let get_config () =
   Printf.printf "\n=== Wordle Configuration ===\n";
   let word_length = prompt_int ~default:5 ~min:2 ~max:10 "Word length (2-10)" in
   let max_guesses = prompt_int ~default:6 ~min:1 ~max:20 "Max guesses" in
   let show_hints = prompt_bool ~default:true "Show hints (solver's guess)" in
+  let feedback_granularity = prompt_feedback_granularity () in
   Printf.printf "\n";
-  (word_length, max_guesses, show_hints)
+  (word_length, max_guesses, show_hints, feedback_granularity)
 
 (** Run the game with a given configuration *)
-let run_with_config ~word_length ~max_guesses ~show_hints =
+let run_with_config ~word_length ~max_guesses ~show_hints ~feedback_granularity =
   let module Config = struct
     let word_length = word_length
+    let feedback_granularity = feedback_granularity
   end in
   let module W = Lib.Wordle_functor.Make (Config) in
   let words_dict, answers_dict = Lib.Dict.load_dictionary_by_length Config.word_length in
@@ -148,10 +169,10 @@ let run_with_config ~word_length ~max_guesses ~show_hints =
 (** Main entry point *)
 let main () =
   (* Get configuration from user *)
-  let word_length, max_guesses, show_hints = get_config () in
+  let word_length, max_guesses, show_hints, feedback_granularity = get_config () in
   
   (* Run the game with the configuration *)
-  run_with_config ~word_length ~max_guesses ~show_hints
+  run_with_config ~word_length ~max_guesses ~show_hints ~feedback_granularity
 
 let () = main ()
 

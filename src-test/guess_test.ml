@@ -6,6 +6,7 @@ open OUnit2
 (* Create a test configuration for 5-letter words *)
 module Config5 = struct
   let word_length = 5
+  let feedback_granularity = Lib.Config.ThreeState
 end
 
 module Guess5 = Lib.Guess.Make (Config5)
@@ -152,6 +153,7 @@ let test_to_string_all_wrong _ =
 (* Test with different word length configuration *)
 module Config3 = struct
   let word_length = 3
+  let feedback_granularity = Lib.Config.ThreeState
 end
 
 module Guess3 = Lib.Guess.Make (Config3)
@@ -189,6 +191,43 @@ let test_generate_all_wrong_positions _ =
   (* A-B(Y), B-C(Y), C-D(Y), D-E(Y), E-A(Y) *)
   assert_equal "YYYYY" (color_list_to_string colors) ~printer:Fn.id
 
+(* Binary mode tests *)
+module Config5Binary = struct
+  let word_length = 5
+  let feedback_granularity = Lib.Config.Binary
+end
+
+module Guess5Binary = Lib.Guess.Make (Config5Binary)
+
+let test_binary_all_correct _ =
+  let colors = Guess5Binary.generate "HELLO" "HELLO" in
+  assert_equal "GGGGG" (color_list_to_string colors) ~printer:Fn.id
+
+let test_binary_all_wrong _ =
+  let colors = Guess5Binary.generate "ABCDE" "FGHIJ" in
+  (* All wrong positions, so all Grey in binary mode *)
+  assert_equal "....." (color_list_to_string colors) ~printer:Fn.id
+
+let test_binary_partial_correct _ =
+  let colors = Guess5Binary.generate "HELLO" "WORLD" in
+  (* H-W(.), E-O(.), L-R(.), L-L(G), O-D(.) *)
+  (* In binary mode: only exact matches are Green, rest are Grey *)
+  assert_equal "....G" (color_list_to_string colors) ~printer:Fn.id
+
+let test_binary_no_yellow _ =
+  (* Test that binary mode never produces Yellow *)
+  let colors = Guess5Binary.generate "WORLD" "BELOW" in
+  (* In three-state: W-B(.), O-E(.), R-L(.), L-O(Y), D-W(.) *)
+  (* In binary: W-B(.), O-E(.), R-L(.), L-O(.), D-W(.) - all Grey except exact matches *)
+  let has_yellow = List.exists colors ~f:(function Guess5Binary.Yellow -> true | _ -> false) in
+  assert_bool "Binary mode should never produce Yellow" (not has_yellow)
+
+let test_binary_letters_in_word_but_wrong_position _ =
+  let colors = Guess5Binary.generate "CRANE" "TRACE" in
+  (* C-T(.), R-R(G), A-A(G), N-C(.), E-E(G) *)
+  (* In binary: only exact position matches are Green *)
+  assert_equal ".GG.G" (color_list_to_string colors) ~printer:Fn.id
+
 (* Build the test suite *)
 let test_suite =
   "Guess Module Tests" >::: [
@@ -221,5 +260,10 @@ let test_suite =
     "test_generate_3letter_all_correct" >:: test_generate_3letter_all_correct;
     "test_generate_answer_has_more_duplicates" >:: test_generate_answer_has_more_duplicates;
     "test_generate_all_wrong_positions" >:: test_generate_all_wrong_positions;
+    "test_binary_all_correct" >:: test_binary_all_correct;
+    "test_binary_all_wrong" >:: test_binary_all_wrong;
+    "test_binary_partial_correct" >:: test_binary_partial_correct;
+    "test_binary_no_yellow" >:: test_binary_no_yellow;
+    "test_binary_letters_in_word_but_wrong_position" >:: test_binary_letters_in_word_but_wrong_position;
   ]
 
