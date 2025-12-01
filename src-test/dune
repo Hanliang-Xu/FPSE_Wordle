@@ -22,8 +22,8 @@
   (preprocess (pps ppx_jane)))
 
 (test
-  (name game_tests)
-  (modules game_tests)
+  (name guess_test)
+  (modules guess_test)
   (libraries
     core
     ounit2

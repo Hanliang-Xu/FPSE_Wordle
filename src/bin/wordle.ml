@@ -10,11 +10,9 @@ end
 (** Create a Wordle game instance with the configuration *)
 module W = Lib.Wordle_functor.Make (Config)
 
-(** Load dictionaries from data files *)
+(** Load dictionaries from data files for the configured word length *)
 let load_dictionaries () =
-  let words_dict = Lib.Dict.load_dictionary "data/words.txt" in
-  let answers_dict = Lib.Dict.load_dictionary "data/answers.txt" in
-  (words_dict, answers_dict)
+  Lib.Dict.load_dictionary_by_length Config.word_length
 
 (** Main game loop skeleton - demonstrates how modules thread together *)
 let play_game ~answer ~max_guesses ~words_dict =
@@ -95,7 +93,7 @@ let play_game ~answer ~max_guesses ~words_dict =
 
 (** Main entry point *)
 let main () =
-  (* Load dictionaries *)
+  (* Load dictionaries for the configured word length *)
   let words_dict, answers_dict = load_dictionaries () in
   
   (* Get a random answer from the answers dictionary *)
