@@ -49,3 +49,8 @@ val word_count : string list -> int
 
 val supported_lengths : int list
 (** [supported_lengths] returns the list of supported word lengths [2; 3; 4; 5; 6; 7; 8; 9; 10]. *)
+
+val is_valid_word_api : string -> bool
+(** [is_valid_word_api word] checks if [word] is valid by calling a dictionary API.
+    Returns true if the word is valid, false otherwise.
+    This function makes an HTTP request to validate the word. *)

@@ -1,5 +1,7 @@
 _build/
 .dune/
+bisect*.coverage
+_coverage/
 
 *.coverage
 

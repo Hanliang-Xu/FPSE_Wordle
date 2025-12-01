@@ -93,11 +93,14 @@ let run_with_config ~word_length ~max_guesses ~show_hints =
         (* Validate the guess using Utils *)
         match W.Utils.validate_guess normalized_guess with
         | Ok valid_guess ->
-          (* Check if word is in dictionary *)
-          if not (Lib.Dict.is_valid_word valid_guess words_dict) then (
-            Printf.printf "Invalid word: %s is not in the dictionary\n" valid_guess;
+          (* Check if word is valid using API *)
+          Printf.printf "Validating word via API... ";
+          Out_channel.flush stdout;
+          if not (Lib.Dict.is_valid_word_api valid_guess) then (
+            Printf.printf "Invalid word: %s is not a valid word\n" valid_guess;
             loop game_state solver_state
           ) else (
+            Printf.printf "Valid!\n";
             (* Update game state with the new guess (feedback generated internally) *)
             let new_game_state = W.Game.step game_state valid_guess in
             

@@ -54,3 +54,20 @@ let get_random_word dictionary =
     let len = List.length dictionary in
     let index = Random.int len in
     List.nth_exn dictionary index
+
+(** Checks if a word is valid by calling a dictionary API *)
+let is_valid_word_api word =
+  let normalized = normalize_word word in
+  try
+    (* Use Free Dictionary API to validate word *)
+    let api_url = Printf.sprintf "https://api.dictionaryapi.dev/api/v2/entries/en/%s" normalized in
+    let command = Printf.sprintf "curl -s -o /dev/null -w \"%%{http_code}\" \"%s\"" api_url in
+    let ic = Core_unix.open_process_in command in
+    let status_code = In_channel.input_line ic in
+    ignore (Core_unix.close_process_in ic);
+    match status_code with
+    | Some "200" -> true  (* Word found *)
+    | Some _ -> false     (* API returned non-200 status (word not found) *)
+    | None -> false       (* Failed to read status code *)
+  with
+  | _ -> false  (* On any error, return false *)
