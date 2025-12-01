@@ -1,6 +1,4 @@
 module type Config = sig
   val word_length : int
-  
-  (* have the difficulty level *)
-  
+  (** The length of words in this Wordle game instance *)
 end
