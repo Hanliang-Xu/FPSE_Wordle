@@ -1,5 +1,6 @@
 (** Guess module implementation *)
 
+open Core
 open Config
 
 module type S = sig
@@ -29,6 +30,8 @@ module Make (C : Config) : S = struct
       List.fold2_exn answer_chars exact_matches ~init:[] ~f:(fun acc a_char match_opt ->
         match match_opt with
         | Some Green -> acc
+        | Some Yellow
+        | Some Grey
         | None -> a_char :: acc)
       |> List.fold ~init:(Map.empty (module Char)) ~f:(fun acc c ->
         Map.update acc c ~f:(function
@@ -41,6 +44,8 @@ module Make (C : Config) : S = struct
         ~f:(fun (counts, acc) g_char match_opt ->
           match match_opt with
           | Some Green -> (counts, Green :: acc)
+          | Some Yellow
+          | Some Grey
           | None ->
             let count = Map.find counts g_char |> Option.value ~default:0 in
             if count > 0 then

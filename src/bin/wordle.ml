@@ -60,13 +60,14 @@ let play_game ~answer ~max_guesses ~words_dict =
             let new_game_state = W.Game.step game_state valid_guess in
             
             (* Get the feedback for display and solver update *)
-            let feedback = match W.Game.last_feedback new_game_state with
+            let feedback =
+              match W.Game.last_feedback new_game_state with
               | Some fb -> fb
               | None -> failwith "Unexpected: no feedback after step"
             in
             
             (* Update solver with feedback *)
-            let new_solver_state = W.Solver.update solver_state feedback.guess feedback.colors in
+            let new_solver_state = W.Solver.update solver_state feedback in
             
             (* Display current state *)
             Printf.printf "Guess %d/%d: %s\n" 

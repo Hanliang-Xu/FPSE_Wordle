@@ -1,2 +1,9 @@
 _build/
 .dune/
+
+*.coverage
+
+STYLE_COMPLIANCE.md
+TEST_SUMMARY.md
+
+src/bin/wordle.exe

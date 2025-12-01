@@ -8,7 +8,7 @@ module Config5 = struct
   let word_length = 5
 end
 
-module Guess5 = Guess.Make (Config5)
+module Guess5 = Lib.Guess.Make (Config5)
 
 (* Helper function to convert color list to string for easier comparison *)
 let color_list_to_string colors =
@@ -154,7 +154,7 @@ module Config3 = struct
   let word_length = 3
 end
 
-module Guess3 = Guess.Make (Config3)
+module Guess3 = Lib.Guess.Make (Config3)
 
 let test_generate_3letter _ =
   let colors = Guess3.generate "CAT" "BAT" in

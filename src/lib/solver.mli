@@ -10,8 +10,8 @@ module Make (G : Guess.S) : sig
   val make_guess : t -> string
   (** [make_guess solver] returns the next guess to make based on the current solver state *)
 
-  val update : t -> string -> G.color list -> t
-  (** [update solver guess colors] updates the solver state with the feedback from a guess.
-      [guess] is the word that was guessed, and [colors] is the feedback for each letter. *)
+  val update : t -> G.feedback -> t
+  (** [update solver fb] updates the solver state with the feedback from a guess.
+      [fb.guess] is the word that was guessed, and [fb.colors] is the feedback for each letter. *)
 end
 

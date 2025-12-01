@@ -37,9 +37,16 @@ module Make (C : Config.Config) : sig
 
   module Solver : sig
     type t
+    (** Opaque solver state that tracks remaining candidates and guess history. *)
+
     val create : string list -> t
+    (** [create words] initializes the solver with an initial set of candidate words. *)
+
     val make_guess : t -> string
-    val update : t -> string -> Feedback.color list -> t
+    (** [make_guess solver] selects the next guess word based on the current solver state. *)
+
+    val update : t -> Feedback.feedback -> t
+    (** [update solver fb] updates the solver state with the full feedback record for a guess. *)
   end
 end
 
