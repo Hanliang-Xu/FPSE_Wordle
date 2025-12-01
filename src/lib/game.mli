@@ -4,16 +4,18 @@ module Make (G : Guess.S) : sig
   type t = {
     board : G.feedback list;
     max_guesses : int;
+    answer : string;
   }
-  (** The game state, containing the board (a list of rows, each with a guess and its feedback colors)
-      and the maximum number of guesses allowed *)
+  (** The game state, containing the board (a list of rows, each with a guess and its feedback colors),
+      the maximum number of guesses allowed, and the answer word *)
   
-  val init : max_guesses:int -> t
-  (** [init ~max_guesses] returns an empty game state with no guesses made
-      and the specified maximum number of guesses allowed *)
+  val init : answer:string -> max_guesses:int -> t
+  (** [init ~answer ~max_guesses] returns an empty game state with no guesses made,
+      the specified answer word, and the specified maximum number of guesses allowed *)
   
   val step : t -> string -> t
   (** [step game_state guess] adds a new guess to the game state.
+      The feedback is generated internally using the answer stored in the game state.
       Requires: [guess] has length equal to [word_length] *)
   
   val num_guesses : t -> int

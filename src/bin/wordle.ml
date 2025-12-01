@@ -21,8 +21,8 @@ let play_game ~answer ~max_guesses ~words_dict =
   (* Normalize answer for consistency *)
   let answer = Lib.Dict.normalize_word answer in
   
-  (* Initialize game state *)
-  let game = W.Game.init ~max_guesses in
+  (* Initialize game state with the answer *)
+  let game = W.Game.init ~answer ~max_guesses in
   
   (* Initialize solver with the words dictionary *)
   let solver = W.Solver.create words_dict in
@@ -58,11 +58,14 @@ let play_game ~answer ~max_guesses ~words_dict =
             Printf.printf "Invalid word: %s is not in the dictionary\n" valid_guess;
             loop game_state solver_state
           ) else (
-            (* Generate feedback for the guess *)
-            let feedback = W.Guess.make_feedback valid_guess answer in
-            
-            (* Update game state with the new guess *)
+            (* Update game state with the new guess (feedback generated internally) *)
             let new_game_state = W.Game.step game_state valid_guess in
+            
+            (* Get the feedback for display and solver update *)
+            let feedback = match W.Game.last_feedback new_game_state with
+              | Some fb -> fb
+              | None -> failwith "Unexpected: no feedback after step"
+            in
             
             (* Update solver with feedback *)
             let new_solver_state = W.Solver.update solver_state feedback.guess feedback.colors in

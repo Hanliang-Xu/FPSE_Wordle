@@ -15,9 +15,10 @@ module Make (C : Config.Config) : sig
     type t = {
       board : feedback list;
       max_guesses : int;
+      answer : string;
     }
     
-    val init : max_guesses:int -> t
+    val init : answer:string -> max_guesses:int -> t
     val step : t -> string -> t
     val num_guesses : t -> int
     val is_won : t -> bool
