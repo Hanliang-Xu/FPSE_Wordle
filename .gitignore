@@ -3,8 +3,6 @@ _build/
 bisect*.coverage
 _coverage/
 
-*.coverage
-
 STYLE_COMPLIANCE.md
 TEST_SUMMARY.md
 

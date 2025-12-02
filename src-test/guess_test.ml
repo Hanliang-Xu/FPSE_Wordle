@@ -7,6 +7,7 @@ open OUnit2
 module Config5 = struct
   let word_length = 5
   let feedback_granularity = Lib.Config.ThreeState
+  let show_position_distances = false
 end
 
 module Guess5 = Lib.Guess.Make (Config5)
@@ -154,6 +155,7 @@ let test_to_string_all_wrong _ =
 module Config3 = struct
   let word_length = 3
   let feedback_granularity = Lib.Config.ThreeState
+  let show_position_distances = false
 end
 
 module Guess3 = Lib.Guess.Make (Config3)
@@ -195,6 +197,7 @@ let test_generate_all_wrong_positions _ =
 module Config5Binary = struct
   let word_length = 5
   let feedback_granularity = Lib.Config.Binary
+  let show_position_distances = false
 end
 
 module Guess5Binary = Lib.Guess.Make (Config5Binary)

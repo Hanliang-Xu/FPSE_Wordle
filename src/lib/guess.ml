@@ -65,7 +65,61 @@ module Make (C : Config) : S = struct
         in
         List.rev colors
 
-  let make_feedback guess answer = { guess; colors = generate guess answer }
+  (* Calculate distances for Yellow letters *)
+  let calculate_distances guess answer colors =
+    if not C.show_position_distances then None
+    else
+      let guess_chars = String.to_list guess in
+      let answer_chars = String.to_list answer in
+      (* Build a map of answer positions available for each letter (excluding Green matches) *)
+      let available_positions =
+        List.mapi answer_chars ~f:(fun i a_char ->
+          let color = List.nth_exn colors i in
+          match color with
+          | Green -> None  (* Position already matched *)
+          | _ -> Some (i, a_char))
+        |> List.filter_map ~f:Fn.id
+        |> List.fold ~init:(Map.empty (module Char)) ~f:(fun acc (pos, char) ->
+            Map.update acc char ~f:(function
+              | None -> [pos]
+              | Some positions -> pos :: positions))
+      in
+      (* Calculate distance for each position, tracking used positions *)
+      let _, distances = List.foldi guess_chars ~init:(available_positions, []) ~f:(fun guess_pos (avail, acc) g_char ->
+        let color = List.nth_exn colors guess_pos in
+        match color with
+        | Green -> (avail, None :: acc)  (* Already correct, no distance *)
+        | Grey -> (avail, None :: acc)   (* Not in word, no distance *)
+        | Yellow ->
+            (* Find the nearest available position for this letter in the answer *)
+            match Map.find avail g_char with
+            | None -> (avail, None :: acc)  (* Shouldn't happen for Yellow *)
+            | Some positions ->
+                (* Find the closest position to guess_pos *)
+                let best_pos = List.min_elt positions ~compare:(fun p1 p2 ->
+                  let dist1 = abs (p1 - guess_pos) in
+                  let dist2 = abs (p2 - guess_pos) in
+                  Int.compare dist1 dist2)
+                in
+                match best_pos with
+                | None -> (avail, None :: acc)
+                | Some answer_pos ->
+                    let distance = answer_pos - guess_pos in
+                    (* Remove this position from available for future matches *)
+                    let updated_positions = List.filter positions ~f:(fun p -> p <> answer_pos) in
+                    let updated_avail = if List.is_empty updated_positions then
+                        Map.remove avail g_char
+                      else
+                        Map.set avail ~key:g_char ~data:updated_positions
+                    in
+                    (updated_avail, Some distance :: acc))
+      in
+      Some (List.rev distances)
+
+  let make_feedback guess answer =
+    let colors = generate guess answer in
+    let distances = calculate_distances guess answer colors in
+    { guess; colors; distances }
 
   let is_correct { colors; _ } =
     List.for_all colors ~f:(function Green -> true | _ -> false)
@@ -78,7 +132,24 @@ module Make (C : Config) : S = struct
   let colors_to_string colors =
     List.map colors ~f:color_to_string |> String.concat ~sep:""
 
-  let to_string { guess; colors } =
-    Printf.sprintf "%s: %s" guess (colors_to_string colors)
+  let to_string { guess; colors; distances } =
+    let base = Printf.sprintf "%s: %s" guess (colors_to_string colors) in
+    match distances with
+    | None -> base
+    | Some dist_list ->
+        (* Build distance string showing distance for each Yellow letter position *)
+        let dist_str = List.mapi colors ~f:(fun i color ->
+          match (color, List.nth_exn dist_list i) with
+          | Yellow, Some d when d > 0 -> Printf.sprintf "pos%d:+%d" i d
+          | Yellow, Some d when d < 0 -> Printf.sprintf "pos%d:%d" i d
+          | Yellow, Some 0 -> Printf.sprintf "pos%d:0" i
+          | Yellow, None -> ""
+          | _ -> ""
+        )
+        |> List.filter ~f:(fun s -> not (String.is_empty s))
+        |> String.concat ~sep:", "
+        in
+        if String.is_empty dist_str then base
+        else Printf.sprintf "%s [%s]" base dist_str
 end
 

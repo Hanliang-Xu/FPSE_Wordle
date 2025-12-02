@@ -227,14 +227,16 @@ let get_config () =
   let max_guesses = prompt_int ~default:6 ~min:1 ~max:20 "Max guesses" in
   let show_hints = prompt_bool ~default:true "Show hints (solver's guess)" in
   let feedback_granularity = prompt_feedback_granularity () in
+  let show_position_distances = prompt_bool ~default:false "Show position distances for Yellow letters" in
   Printf.printf "\n";
-  (word_length, max_guesses, show_hints, feedback_granularity)
+  (word_length, max_guesses, show_hints, feedback_granularity, show_position_distances)
 
 (** Run the game with a given configuration *)
-let run_with_config ~word_length ~max_guesses ~show_hints ~feedback_granularity =
+let run_with_config ~word_length ~max_guesses ~show_hints ~feedback_granularity ~show_position_distances =
   let module Config = struct
     let word_length = word_length
     let feedback_granularity = feedback_granularity
+    let show_position_distances = show_position_distances
   end in
   let module W = Lib.Wordle_functor.Make (Config) in
   let words_dict, answers_dict = Lib.Dict.load_dictionary_by_length Config.word_length in
@@ -362,10 +364,10 @@ let main () =
   Random.self_init ();
   
   (* Get configuration from user *)
-  let word_length, max_guesses, show_hints, feedback_granularity = get_config () in
+  let word_length, max_guesses, show_hints, feedback_granularity, show_position_distances = get_config () in
   
   (* Run the game with the configuration *)
-  run_with_config ~word_length ~max_guesses ~show_hints ~feedback_granularity
+  run_with_config ~word_length ~max_guesses ~show_hints ~feedback_granularity ~show_position_distances
 
 let () = main ()
 
