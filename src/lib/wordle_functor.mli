@@ -47,6 +47,13 @@ module Make (C : Config.Config) : sig
 
     val update : t -> Feedback.feedback -> t
     (** [update solver fb] updates the solver state with the full feedback record for a guess. *)
+
+    val candidate_count : t -> int
+    (** [candidate_count solver] returns the number of remaining candidate words. *)
+
+    val get_candidates : t -> string list
+    (** [get_candidates solver] returns the current list of remaining candidate words.
+        Useful for debugging. *)
   end
 end
 

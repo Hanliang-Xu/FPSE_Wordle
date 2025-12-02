@@ -239,7 +239,11 @@ let run_with_config ~word_length ~max_guesses ~show_hints ~feedback_granularity 
     let show_position_distances = show_position_distances
   end in
   let module W = Lib.Wordle_functor.Make (Config) in
-  let words_dict, answers_dict = Lib.Dict.load_dictionary_by_length Config.word_length in
+  (* Load words from Random Word API only (no local file fallback) and answers from local files *)
+  Printf.printf "Loading words from Random Word API... ";
+  Out_channel.flush stdout;
+  let words_dict, answers_dict = Lib.Dict.load_dictionary_by_length_api Config.word_length in
+  Printf.printf "Done!\n";
   let answer = Lib.Dict.normalize_word (Lib.Dict.get_random_word answers_dict) in
   let show_hint_if_enabled ~solver_guess =
     if show_hints then
@@ -268,7 +272,10 @@ let run_with_config ~word_length ~max_guesses ~show_hints ~feedback_granularity 
       if W.Game.can_guess game_state then (
         (* Get solver's guess for hint (if enabled) *)
         let solver_guess = W.Solver.make_guess solver_state in
+        let candidate_count = W.Solver.candidate_count solver_state in
         show_hint_if_enabled ~solver_guess;
+        if show_hints then
+          Printf.printf "Solver: %d candidate words remaining\n" candidate_count;
         
         (* Get guess from user input *)
         Printf.printf "Enter your guess: ";
@@ -305,12 +312,18 @@ let run_with_config ~word_length ~max_guesses ~show_hints ~feedback_granularity 
             
             (* Update solver with feedback *)
             let new_solver_state = W.Solver.update solver_state feedback in
+            let new_candidate_count = W.Solver.candidate_count new_solver_state in
             
             (* Display current state *)
             Printf.printf "Guess %d/%d: %s\n" 
               (W.Game.num_guesses new_game_state)
               (W.Game.max_guesses new_game_state)
               (W.Guess.to_string feedback);
+            
+            (* Show solver progress if hints enabled *)
+            if show_hints then
+              Printf.printf "Solver: %d candidate words remaining (filtered from %d)\n" 
+                new_candidate_count (W.Solver.candidate_count solver_state);
             
             (* Check if the guess was correct (all green) *)
             if W.Game.is_won new_game_state then (
@@ -352,6 +365,7 @@ let run_with_config ~word_length ~max_guesses ~show_hints ~feedback_granularity 
   (* Print game info *)
   Printf.printf "Loaded %d valid words\n" (Lib.Dict.word_count words_dict);
   Printf.printf "Loaded %d possible answers\n" (Lib.Dict.word_count answers_dict);
+  Printf.printf "Solver initialized with %d candidate words\n" (W.Solver.candidate_count solver);
   Printf.printf "Max guesses: %d\n" max_guesses;
   Printf.printf "Hints: %s\n" (if show_hints then "enabled" else "disabled");
   Printf.printf "Starting game!\n\n";

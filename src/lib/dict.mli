@@ -54,3 +54,19 @@ val is_valid_word_api : string -> bool
 (** [is_valid_word_api word] checks if [word] is valid by calling a dictionary API.
     Returns true if the word is valid, false otherwise.
     This function makes an HTTP request to validate the word. *)
+
+val load_words_from_api : word_length:int -> string list
+(** [load_words_from_api ~word_length] fetches words of the specified length from Random Word API.
+    Uses single API call to get all words - no API key required, no fallback to local files.
+    Returns a list of normalized (lowercase) words.
+    Returns empty list if API fails.
+    Raises [Invalid_argument] if word_length is not between 2 and 10. *)
+
+val load_dictionary_by_length_api : int -> (string list * string list)
+(** [load_dictionary_by_length_api n] loads words and answers for n-letter words.
+    Returns (words, answers) tuple where:
+    - words: loaded from Random Word API only (for solver guesses and user guesses) - no local file fallback
+    - answers: loaded from local files (for game answers)
+    Requires: 2 <= n <= 10
+    Raises [Invalid_argument] if n is out of range.
+    Raises [Sys_error] if answer files cannot be read. *)

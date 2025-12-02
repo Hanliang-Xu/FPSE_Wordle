@@ -1,4 +1,4 @@
-(** Wordle functor implementation - stub for now *)
+(** Wordle functor implementation *)
 
 open Config
 
