@@ -7,14 +7,14 @@ type cumulative_hints = {
 }
 
 (** Generate hint mode 1: correct letter in correct position *)
-val generate_hint_mode1 : answer:string -> guesses_with_colors:(string * Lib.Feedback.color list) list -> int * char
+val generate_hint_mode1 : answer:string -> guesses_with_colors:(string * Feedback.color list) list -> int * char
 
 (** Generate hint mode 2: correct letter without position *)
-val generate_hint_mode2 : answer:string -> guesses_with_colors:(string * Lib.Feedback.color list) list -> char
+val generate_hint_mode2 : answer:string -> guesses_with_colors:(string * Feedback.color list) list -> char
 
 (** Display all cumulative hints *)
 val display_cumulative_hints : word_length:int -> cumulative_hints -> unit
 
 (** Ask user if they want a hint and provide it, updating cumulative hints *)
-val offer_hint : answer:string -> guesses_with_colors:(string * Lib.Feedback.color list) list -> cumulative_hints:cumulative_hints -> cumulative_hints
+val offer_hint : answer:string -> guesses_with_colors:(string * Feedback.color list) list -> cumulative_hints:cumulative_hints -> cumulative_hints
 

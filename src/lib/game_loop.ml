@@ -9,13 +9,13 @@ let run_with_config ~word_length ~max_guesses ~show_hints ~feedback_granularity 
     let feedback_granularity = feedback_granularity
     let show_position_distances = show_position_distances
   end in
-  let module W = Lib.Wordle_functor.Make (Config) in
+  let module W = Wordle_functor.Make (Config) in
   (* Load words from Random Word API only (no local file fallback) and answers from local files *)
   Printf.printf "Loading words from Random Word API... ";
   Out_channel.flush stdout;
-  let words_dict, answers_dict = Lib.Dict.load_dictionary_by_length_api Config.word_length in
+  let words_dict, answers_dict = Dict.load_dictionary_by_length_api Config.word_length in
   Printf.printf "Done!\n";
-  let answer = Lib.Dict.normalize_word (Lib.Dict.get_random_word answers_dict) in
+  let answer = Dict.normalize_word (Dict.get_random_word answers_dict) in
   let show_hint_if_enabled ~solver_guess =
     if show_hints then
       Printf.printf "Hint (solver's guess): %s\n" solver_guess
@@ -58,7 +58,7 @@ let run_with_config ~word_length ~max_guesses ~show_hints ~feedback_granularity 
         in
         
         (* Normalize guess for consistency *)
-        let normalized_guess = Lib.Dict.normalize_word guess in
+        let normalized_guess = Dict.normalize_word guess in
         
         (* Validate the guess using Utils *)
         match W.Utils.validate_guess normalized_guess with
@@ -66,7 +66,7 @@ let run_with_config ~word_length ~max_guesses ~show_hints ~feedback_granularity 
           (* Check if word is valid using API *)
           Printf.printf "Validating word via API... ";
           Out_channel.flush stdout;
-          if not (Lib.Dict.is_valid_word_api valid_guess) then (
+          if not (Dict.is_valid_word_api valid_guess) then (
             Printf.printf "Invalid word: %s is not a valid word\n" valid_guess;
             loop game_state solver_state cumulative_hints
           ) else (
@@ -112,7 +112,7 @@ let run_with_config ~word_length ~max_guesses ~show_hints ~feedback_granularity 
               let guesses_with_colors = 
                 List.map current_board ~f:(fun fb -> 
                   (* Access feedback fields - feedback is Feedback.feedback type *)
-                  let open Lib.Feedback in
+                  let open Feedback in
                   (fb.guess, fb.colors)
                 )
               in
@@ -134,8 +134,8 @@ let run_with_config ~word_length ~max_guesses ~show_hints ~feedback_granularity 
   in
   
   (* Print game info *)
-  Printf.printf "Loaded %d valid words\n" (Lib.Dict.word_count words_dict);
-  Printf.printf "Loaded %d possible answers\n" (Lib.Dict.word_count answers_dict);
+  Printf.printf "Loaded %d valid words\n" (Dict.word_count words_dict);
+  Printf.printf "Loaded %d possible answers\n" (Dict.word_count answers_dict);
   Printf.printf "Solver initialized with %d candidate words\n" (W.Solver.candidate_count solver);
   Printf.printf "Max guesses: %d\n" max_guesses;
   Printf.printf "Hints: %s\n" (if show_hints then "enabled" else "disabled");

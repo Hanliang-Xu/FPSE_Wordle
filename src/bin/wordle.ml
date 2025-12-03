@@ -9,11 +9,11 @@ let main () =
   
   (* Get configuration from user *)
   let word_length, max_guesses, show_hints, feedback_granularity, show_position_distances = 
-    Ui.get_config () 
+    Lib.Ui.get_config () 
   in
   
   (* Run the game with the configuration *)
-  Game_loop.run_with_config 
+  Lib.Game_loop.run_with_config 
     ~word_length 
     ~max_guesses 
     ~show_hints 

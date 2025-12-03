@@ -44,15 +44,15 @@ let prompt_feedback_granularity () =
   Printf.printf "Choose [default: 1]: ";
   Out_channel.flush stdout;
   match In_channel.input_line In_channel.stdin with
-  | None -> Lib.Config.ThreeState
+  | None -> Config.ThreeState
   | Some input ->
       let trimmed = String.strip input in
-      if String.is_empty trimmed then Lib.Config.ThreeState
-      else if String.equal trimmed "1" then Lib.Config.ThreeState
-      else if String.equal trimmed "2" then Lib.Config.Binary
+      if String.is_empty trimmed then Config.ThreeState
+      else if String.equal trimmed "1" then Config.ThreeState
+      else if String.equal trimmed "2" then Config.Binary
       else (
         Printf.printf "Invalid input. Using default: Three-state\n";
-        Lib.Config.ThreeState
+        Config.ThreeState
       )
 
 (** Prompt user for hint mode selection *)

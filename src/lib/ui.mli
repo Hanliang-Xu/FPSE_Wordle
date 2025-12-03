@@ -7,11 +7,11 @@ val prompt_int : default:int -> min:int -> max:int -> string -> int
 val prompt_bool : default:bool -> string -> bool
 
 (** Prompt user for feedback granularity mode *)
-val prompt_feedback_granularity : unit -> Lib.Config.feedback_granularity
+val prompt_feedback_granularity : unit -> Config.feedback_granularity
 
 (** Prompt user for hint mode selection *)
 val prompt_hint_mode : unit -> int
 
 (** Get game configuration from user input *)
-val get_config : unit -> int * int * bool * Lib.Config.feedback_granularity * bool
+val get_config : unit -> int * int * bool * Config.feedback_granularity * bool
 

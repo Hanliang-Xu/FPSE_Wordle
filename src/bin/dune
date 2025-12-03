@@ -1,6 +1,6 @@
 (executable
   (name wordle)
-  (modules wordle ui hints game_loop)
+  (modules wordle)
   (libraries
     core
     cmdliner

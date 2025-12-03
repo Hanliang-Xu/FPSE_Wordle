@@ -16,7 +16,7 @@ let generate_hint_mode1 ~answer ~guesses_with_colors =
     List.fold guesses_with_colors ~init:(Set.empty (module Int)) ~f:(fun acc (_, colors) ->
       List.foldi colors ~init:acc ~f:(fun idx acc' color ->
         match color with
-        | Lib.Feedback.Green -> Set.add acc' idx
+        | Feedback.Green -> Set.add acc' idx
         | _ -> acc'
       )
     )
@@ -43,7 +43,7 @@ let generate_hint_mode2 ~answer ~guesses_with_colors =
     List.fold guesses_with_colors ~init:(Set.empty (module Char)) ~f:(fun acc (guess, colors) ->
       List.fold2_exn (String.to_list guess) colors ~init:acc ~f:(fun acc' char color ->
         match color with
-        | Lib.Feedback.Green | Lib.Feedback.Yellow -> Set.add acc' char
+        | Feedback.Green | Feedback.Yellow -> Set.add acc' char
         | _ -> acc'
       )
     )
