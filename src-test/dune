@@ -15,6 +15,7 @@
   (modules dict_tests)
   (libraries
     core
+    core_unix
     ounit2
     lib
   )

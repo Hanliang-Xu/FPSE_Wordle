@@ -39,9 +39,8 @@ module Make (C : Config) : S = struct
           List.fold2_exn answer_chars exact_matches ~init:[] ~f:(fun acc a_char match_opt ->
             match match_opt with
             | Some Green -> acc
-            | Some Yellow
-            | Some Grey
-            | None -> a_char :: acc)
+            | None -> a_char :: acc
+            | Some _ -> a_char :: acc)  (* Unreachable: exact_matches only has Some Green or None *)
           |> List.fold ~init:(Map.empty (module Char)) ~f:(fun acc c ->
             Map.update acc c ~f:(function
               | None -> 1
@@ -53,9 +52,15 @@ module Make (C : Config) : S = struct
             ~f:(fun (counts, acc) g_char match_opt ->
               match match_opt with
               | Some Green -> (counts, Green :: acc)
-              | Some Yellow
-              | Some Grey
               | None ->
+                let count = Map.find counts g_char |> Option.value ~default:0 in
+                if count > 0 then
+                  let new_counts = Map.set counts ~key:g_char ~data:(count - 1) in
+                  (new_counts, Yellow :: acc)
+                else
+                  (counts, Grey :: acc)
+              | Some _ ->
+                (* Unreachable: exact_matches only has Some Green or None *)
                 let count = Map.find counts g_char |> Option.value ~default:0 in
                 if count > 0 then
                   let new_counts = Map.set counts ~key:g_char ~data:(count - 1) in
@@ -92,17 +97,13 @@ module Make (C : Config) : S = struct
         | Grey -> (avail, None :: acc)   (* Not in word, no distance *)
         | Yellow ->
             (* Find the nearest available position for this letter in the answer *)
-            match Map.find avail g_char with
-            | None -> (avail, None :: acc)  (* Shouldn't happen for Yellow *)
+            (match Map.find avail g_char with
             | Some positions ->
                 (* Find the closest position to guess_pos *)
-                let best_pos = List.min_elt positions ~compare:(fun p1 p2 ->
+                (match List.min_elt positions ~compare:(fun p1 p2 ->
                   let dist1 = abs (p1 - guess_pos) in
                   let dist2 = abs (p2 - guess_pos) in
-                  Int.compare dist1 dist2)
-                in
-                match best_pos with
-                | None -> (avail, None :: acc)
+                  Int.compare dist1 dist2) with
                 | Some answer_pos ->
                     let distance = answer_pos - guess_pos in
                     (* Remove this position from available for future matches *)
@@ -112,7 +113,9 @@ module Make (C : Config) : S = struct
                       else
                         Map.set avail ~key:g_char ~data:updated_positions
                     in
-                    (updated_avail, Some distance :: acc))
+                    (updated_avail, Some distance :: acc)
+                | None -> (avail, None :: acc))
+            | None -> (avail, None :: acc)))
       in
       Some (List.rev distances)
 
@@ -143,7 +146,6 @@ module Make (C : Config) : S = struct
           | Yellow, Some d when d > 0 -> Printf.sprintf "pos%d:+%d" i d
           | Yellow, Some d when d < 0 -> Printf.sprintf "pos%d:%d" i d
           | Yellow, Some 0 -> Printf.sprintf "pos%d:0" i
-          | Yellow, None -> ""
           | _ -> ""
         )
         |> List.filter ~f:(fun s -> not (String.is_empty s))
