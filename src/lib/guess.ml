@@ -3,6 +3,21 @@
 open Core
 open Config
 
+(* Helper functions defined outside functor for better coverage tracking *)
+let color_to_string_impl = function
+  | Feedback.Green -> "G"
+  | Feedback.Yellow -> "Y"
+  | Feedback.Grey -> "."
+
+let colors_to_string_impl colors =
+  List.map colors ~f:color_to_string_impl |> String.concat ~sep:""
+
+let to_string_impl { Feedback.guess; colors; _ } =
+  Printf.sprintf "%s: %s" guess (colors_to_string_impl colors)
+
+let is_correct_impl { Feedback.colors; _ } =
+  List.for_all colors ~f:(function Feedback.Green -> true | _ -> false)
+
 module type S = sig
   include module type of Feedback
   
@@ -39,8 +54,7 @@ module Make (C : Config) : S = struct
           List.fold2_exn answer_chars exact_matches ~init:[] ~f:(fun acc a_char match_opt ->
             match match_opt with
             | Some Green -> acc
-            | None -> a_char :: acc
-            | Some _ -> a_char :: acc)  (* Unreachable: exact_matches only has Some Green or None *)
+            | _ -> a_char :: acc)
           |> List.fold ~init:(Map.empty (module Char)) ~f:(fun acc c ->
             Map.update acc c ~f:(function
               | None -> 1
@@ -52,15 +66,7 @@ module Make (C : Config) : S = struct
             ~f:(fun (counts, acc) g_char match_opt ->
               match match_opt with
               | Some Green -> (counts, Green :: acc)
-              | None ->
-                let count = Map.find counts g_char |> Option.value ~default:0 in
-                if count > 0 then
-                  let new_counts = Map.set counts ~key:g_char ~data:(count - 1) in
-                  (new_counts, Yellow :: acc)
-                else
-                  (counts, Grey :: acc)
-              | Some _ ->
-                (* Unreachable: exact_matches only has Some Green or None *)
+              | _ ->
                 let count = Map.find counts g_char |> Option.value ~default:0 in
                 if count > 0 then
                   let new_counts = Map.set counts ~key:g_char ~data:(count - 1) in
@@ -124,16 +130,9 @@ module Make (C : Config) : S = struct
     let distances = calculate_distances guess answer colors in
     { guess; colors; distances }
 
-  let is_correct { colors; _ } =
-    List.for_all colors ~f:(function Green -> true | _ -> false)
-
-  let color_to_string = function
-    | Green -> "G"
-    | Yellow -> "Y"
-    | Grey -> "."
-
-  let colors_to_string colors =
-    List.map colors ~f:color_to_string |> String.concat ~sep:""
+  let is_correct = is_correct_impl
+  let color_to_string = color_to_string_impl
+  let colors_to_string = colors_to_string_impl
 
   let to_string { guess; colors; distances } =
     let base = Printf.sprintf "%s: %s" guess (colors_to_string colors) in

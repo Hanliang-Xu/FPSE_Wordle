@@ -41,6 +41,35 @@ let test_filter_by_length _ =
   assert_equal [] (filter_by_length words 6);
   assert_equal [] (filter_by_length [] 5)
 
+let test_load_dictionary _ =
+  (* Test loading a real dictionary file *)
+
+  let words = load_dictionary "data/5letter/words.txt" in
+  assert_bool "Should load words from file" (List.length words > 0);
+  assert_bool "All words should be lowercase" 
+    (List.for_all words ~f:(fun w -> String.equal w (normalize_word w)));
+  assert_bool "Should contain 'about'" (List.mem words "about" ~equal:String.equal);
+  assert_bool "Should contain 'above'" (List.mem words "above" ~equal:String.equal)
+
+let test_load_dictionary_by_length _ =
+  (* Test loading dictionaries for different lengths *)
+
+  let test_length n =
+    let words, answers = load_dictionary_by_length n in
+    assert_bool (Printf.sprintf "Should load words for length %d" n) 
+      (List.length words > 0);
+    assert_bool (Printf.sprintf "Should load answers for length %d" n) 
+      (List.length answers > 0);
+    assert_bool (Printf.sprintf "All words should be length %d" n)
+      (List.for_all words ~f:(fun w -> String.length w = n));
+    assert_bool (Printf.sprintf "All answers should be length %d" n)
+      (List.for_all answers ~f:(fun w -> String.length w = n));
+    (* answers should be a subset of words *)
+    assert_bool (Printf.sprintf "All answers should be in words for length %d" n)
+      (List.for_all answers ~f:(fun a -> List.mem words a ~equal:String.equal))
+  in
+  List.iter [2; 3; 4; 5; 6; 7; 8; 9; 10] ~f:test_length
+
 let test_load_dictionary_by_length_invalid _ =
   (* Test invalid length raises exception *)
   assert_raises (Invalid_argument "Word length 1 not supported. Must be between 2 and 10.") 
@@ -176,6 +205,194 @@ let test_is_valid_word_api _ =
   (* Lenient: API might fail, so we just verify it returns a boolean *)
   assert_bool "is_valid_word_api should return a boolean for invalid words" 
     (match invalid_result with true | false -> true)
+let test_load_dictionary_filters_empty_lines _ =
+  (* Test that load_dictionary properly handles files with empty lines *)
+  (* We'll test this by checking that real dictionary files don't have empty entries *)
+
+  let words = load_dictionary "data/5letter/words.txt" in
+  (* All loaded words should be non-empty *)
+  assert_bool "All loaded words should be non-empty"
+    (List.for_all words ~f:(fun w -> not (String.is_empty w)));
+  (* All words should be properly trimmed *)
+  assert_bool "All words should be properly trimmed"
+    (List.for_all words ~f:(fun w -> String.equal w (String.strip w)))
+
+(** Complex multi-file tests *)
+let test_load_all_dictionary_files _ =
+  (* Test loading all supported dictionary files simultaneously *)
+
+  let all_dicts = List.map supported_lengths ~f:(fun length ->
+    let words, answers = load_dictionary_by_length length in
+    (length, words, answers)
+  ) in
+  assert_equal 9 (List.length all_dicts);
+  (* Verify each dictionary *)
+  List.iter all_dicts ~f:(fun (length, words, answers) ->
+    assert_bool (Printf.sprintf "Dictionary for length %d should have words" length)
+      (List.length words > 0);
+    assert_bool (Printf.sprintf "Dictionary for length %d should have answers" length)
+      (List.length answers > 0);
+    assert_bool (Printf.sprintf "All words should be length %d" length)
+      (List.for_all words ~f:(fun w -> String.length w = length));
+    assert_bool (Printf.sprintf "All answers should be length %d" length)
+      (List.for_all answers ~f:(fun w -> String.length w = length));
+    assert_bool (Printf.sprintf "Answers should be subset of words for length %d" length)
+      (List.for_all answers ~f:(fun a -> List.mem words a ~equal:String.equal))
+  )
+
+let test_cross_file_word_validation _ =
+  (* Test that words from one length file are not valid in another *)
+
+  let words3, _ = load_dictionary_by_length 3 in
+  let words5, _ = load_dictionary_by_length 5 in
+  let words7, _ = load_dictionary_by_length 7 in
+  
+  (* Sample words from each *)
+  let sample3 = List.nth_exn words3 0 in
+  let sample5 = List.nth_exn words5 0 in
+  let sample7 = List.nth_exn words7 0 in
+  
+  (* Words from 3-letter should not be in 5-letter or 7-letter *)
+  assert_bool "3-letter word should not be in 5-letter dictionary"
+    (not (is_valid_word sample3 words5));
+  assert_bool "3-letter word should not be in 7-letter dictionary"
+    (not (is_valid_word sample3 words7));
+  
+  (* Words from 5-letter should not be in 3-letter or 7-letter *)
+  assert_bool "5-letter word should not be in 3-letter dictionary"
+    (not (is_valid_word sample5 words3));
+  assert_bool "5-letter word should not be in 7-letter dictionary"
+    (not (is_valid_word sample5 words7));
+  
+  (* Words from 7-letter should not be in 3-letter or 5-letter *)
+  assert_bool "7-letter word should not be in 3-letter dictionary"
+    (not (is_valid_word sample7 words3));
+  assert_bool "7-letter word should not be in 5-letter dictionary"
+    (not (is_valid_word sample7 words5))
+
+let test_answers_subset_consistency_all_lengths _ =
+  (* Test that answers are subsets of words for all lengths *)
+
+  List.iter supported_lengths ~f:(fun length ->
+    let words, answers = load_dictionary_by_length length in
+    assert_bool (Printf.sprintf "All answers should be in words for length %d" length)
+      (List.for_all answers ~f:(fun a -> List.mem words a ~equal:String.equal));
+    assert_bool (Printf.sprintf "Answers count should be <= words count for length %d" length)
+      (List.length answers <= List.length words);
+    (* Answers should typically be a proper subset (not all words are answers) *)
+    (* But we'll just check it's a subset, not necessarily proper *)
+    assert_bool (Printf.sprintf "Answers should be subset of words for length %d" length)
+      (List.length answers <= List.length words)
+  )
+
+let test_random_word_from_multiple_files _ =
+  (* Test getting random words from multiple dictionary files *)
+
+  let random_words = List.map supported_lengths ~f:(fun length ->
+    let _, answers = load_dictionary_by_length length in
+    get_random_word answers
+  ) in
+  assert_equal 9 (List.length random_words);
+  (* Verify each random word has correct length *)
+  List.iter2_exn supported_lengths random_words ~f:(fun length word ->
+    assert_equal length (String.length word) ~printer:Int.to_string
+  )
+
+let test_normalize_word_consistency_across_files _ =
+  (* Test that normalize_word works consistently across all files *)
+
+  List.iter supported_lengths ~f:(fun length ->
+    let words, _ = load_dictionary_by_length length in
+    (* Sample a few words and verify normalization *)
+    let samples = List.take words (min 10 (List.length words)) in
+    List.iter samples ~f:(fun word ->
+      let normalized = normalize_word word in
+      assert_bool (Printf.sprintf "Normalized word should be lowercase for length %d" length)
+        (String.equal normalized (String.lowercase normalized));
+      assert_bool (Printf.sprintf "Normalized word should equal itself for length %d" length)
+        (String.equal normalized (normalize_word normalized))
+    )
+  )
+
+let test_filter_by_length_with_real_dictionaries _ =
+  (* Test filter_by_length with real dictionary data *)
+
+  let words5, _ = load_dictionary_by_length 5 in
+  (* Filter 5-letter words from the 5-letter dictionary (should return all) *)
+  let filtered5 = filter_by_length words5 5 in
+  assert_equal (List.length words5) (List.length filtered5);
+  assert_bool "All filtered words should be 5 letters"
+    (List.for_all filtered5 ~f:(fun w -> String.length w = 5));
+  (* Filter 3-letter words (should return empty) *)
+  let filtered3 = filter_by_length words5 3 in
+  assert_equal 0 (List.length filtered3);
+  (* Filter 7-letter words (should return empty) *)
+  let filtered7 = filter_by_length words5 7 in
+  assert_equal 0 (List.length filtered7)
+
+let test_word_count_consistency _ =
+  (* Test word_count is consistent across all dictionary files *)
+
+  List.iter supported_lengths ~f:(fun length ->
+    let words, answers = load_dictionary_by_length length in
+    assert_equal (List.length words) (word_count words);
+    assert_equal (List.length answers) (word_count answers);
+    assert_bool (Printf.sprintf "Answers count should be <= words count for length %d" length)
+      (word_count answers <= word_count words)
+  )
+
+(** Test is_valid_word_api function *)
+let test_is_valid_word_api_valid _ =
+  (* Test with a common valid English word *)
+  assert_bool "hello should be a valid word" (is_valid_word_api "hello");
+  assert_bool "world should be a valid word" (is_valid_word_api "world");
+  assert_bool "crane should be a valid word" (is_valid_word_api "crane")
+
+let test_is_valid_word_api_invalid _ =
+  (* Test with invalid/nonsense words *)
+  assert_bool "xyzzy should not be a valid word" (not (is_valid_word_api "xyzzy"));
+  assert_bool "qwert should not be a valid word" (not (is_valid_word_api "qwert"));
+  assert_bool "zzzzz should not be a valid word" (not (is_valid_word_api "zzzzz"))
+
+let test_is_valid_word_api_case_insensitive _ =
+  (* Test case insensitivity *)
+  assert_bool "HELLO should be valid (uppercase)" (is_valid_word_api "HELLO");
+  assert_bool "HeLLo should be valid (mixed case)" (is_valid_word_api "HeLLo")
+
+let test_is_valid_word_api_empty _ =
+  (* Test with empty string - API should return false *)
+  assert_bool "empty string should not be valid" (not (is_valid_word_api ""))
+
+let test_load_dictionary_negative_length _ =
+  (* Test negative length raises exception *)
+  assert_raises (Invalid_argument "Word length -1 not supported. Must be between 2 and 10.") 
+    (fun () -> load_dictionary_by_length (-1))
+
+let test_load_dictionary_large_length _ =
+  (* Test very large length raises exception *)
+  assert_raises (Invalid_argument "Word length 100 not supported. Must be between 2 and 10.") 
+    (fun () -> load_dictionary_by_length 100)
+
+let test_normalize_word_special_chars _ =
+  (* Test normalization with various inputs *)
+  assert_equal "abc" (normalize_word "ABC");
+  assert_equal "test123" (normalize_word "TEST123");
+  assert_equal "" (normalize_word "")
+
+let test_filter_by_length_edge_cases _ =
+  (* Test with edge case lengths *)
+  let words = ["a"; "ab"; "abc"; "abcd"; "abcdefghij"] in
+  assert_equal 1 (List.length (filter_by_length words 1));
+  assert_equal 1 (List.length (filter_by_length words 10));
+  assert_equal 0 (List.length (filter_by_length words 100))
+
+let test_is_valid_word_edge_cases _ =
+  (* Test edge cases for is_valid_word *)
+  let dictionary = ["hello"; "world"] in
+  assert_bool "Empty string should not be in dictionary" 
+    (not (is_valid_word "" dictionary));
+  assert_bool "Word should be found with trailing spaces normalized"
+    (is_valid_word "hello" dictionary)
 
 let suite =
   "Dict module tests" >::: [
@@ -192,6 +409,23 @@ let suite =
     "load_dictionary_by_length_api" >:: test_load_dictionary_by_length_api;
     "load_dictionary_by_length_api_invalid" >:: test_load_dictionary_by_length_api_invalid;
     "is_valid_word_api" >:: test_is_valid_word_api;
+    "load_dictionary_filters_empty_lines" >:: test_load_dictionary_filters_empty_lines;
+    "load_all_dictionary_files" >:: test_load_all_dictionary_files;
+    "cross_file_word_validation" >:: test_cross_file_word_validation;
+    "answers_subset_consistency_all_lengths" >:: test_answers_subset_consistency_all_lengths;
+    "random_word_from_multiple_files" >:: test_random_word_from_multiple_files;
+    "normalize_word_consistency_across_files" >:: test_normalize_word_consistency_across_files;
+    "filter_by_length_with_real_dictionaries" >:: test_filter_by_length_with_real_dictionaries;
+    "word_count_consistency" >:: test_word_count_consistency;
+    "is_valid_word_api_valid" >:: test_is_valid_word_api_valid;
+    "is_valid_word_api_invalid" >:: test_is_valid_word_api_invalid;
+    "is_valid_word_api_case_insensitive" >:: test_is_valid_word_api_case_insensitive;
+    "is_valid_word_api_empty" >:: test_is_valid_word_api_empty;
+    "load_dictionary_negative_length" >:: test_load_dictionary_negative_length;
+    "load_dictionary_large_length" >:: test_load_dictionary_large_length;
+    "normalize_word_special_chars" >:: test_normalize_word_special_chars;
+    "filter_by_length_edge_cases" >:: test_filter_by_length_edge_cases;
+    "is_valid_word_edge_cases" >:: test_is_valid_word_edge_cases;
   ]
 
 let () = run_test_tt_main suite

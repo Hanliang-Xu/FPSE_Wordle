@@ -1,0 +1,293 @@
+File "src-test/dune", line 86, characters 8-25:
+86 |   (name integration_tests)
+             ^^^^^^^^^^^^^^^^^
+EEEEEE
+==============================================================================
+Error: Integration tests:5:multiple_configs_simultaneously.
+
+File "/Users/nancy/Desktop/FPSE_Wordle/_build/default/src-test/oUnit-Integration tests-Kehengs-MacBook-Pro.local#02.log", line 20, characters 1-1:
+Error: Integration tests:5:multiple_configs_simultaneously (in the log).
+
+Raised at Lib__Dict.load_dictionary in file "src/lib/dict.ml", line 31, characters 21-42
+Called from Lib__Dict.load_dictionary_by_length in file "src/lib/dict.ml", line 40, characters 16-42
+Called from Dune__exe__Integration_tests.test_multiple_configs_simultaneously in file "src-test/integration_tests.ml", line 173, characters 25-61
+Called from OUnitRunner.run_one_test.(fun) in file "src/lib/ounit2/advanced/oUnitRunner.ml", line 83, characters 13-26
+
+Sys_error("data/3letter/words.txt: No such file or directory")
+------------------------------------------------------------------------------
+==============================================================================
+Error: Integration tests:3:both_feedback_granularities.
+
+File "/Users/nancy/Desktop/FPSE_Wordle/_build/default/src-test/oUnit-Integration tests-Kehengs-MacBook-Pro.local#01.log", line 22, characters 1-1:
+Error: Integration tests:3:both_feedback_granularities (in the log).
+
+Raised at Lib__Dict.load_dictionary in file "src/lib/dict.ml", line 31, characters 21-42
+Called from Lib__Dict.load_dictionary_by_length in file "src/lib/dict.ml", line 40, characters 16-42
+Called from Dune__exe__Integration_tests.test_both_feedback_granularities in file "src-test/integration_tests.ml", line 92, characters 19-55
+Called from OUnitRunner.run_one_test.(fun) in file "src/lib/ounit2/advanced/oUnitRunner.ml", line 83, characters 13-26
+
+Sys_error("data/5letter/words.txt: No such file or directory")
+------------------------------------------------------------------------------
+==============================================================================
+Error: Integration tests:4:cross_file_validation.
+
+File "/Users/nancy/Desktop/FPSE_Wordle/_build/default/src-test/oUnit-Integration tests-Kehengs-MacBook-Pro.local#02.log", line 11, characters 1-1:
+Error: Integration tests:4:cross_file_validation (in the log).
+
+Raised at Lib__Dict.load_dictionary in file "src/lib/dict.ml", line 31, characters 21-42
+Called from Lib__Dict.load_dictionary_by_length in file "src/lib/dict.ml", line 40, characters 16-42
+Called from Dune__exe__Integration_tests.test_cross_file_validation in file "src-test/integration_tests.ml", line 141, characters 18-54
+Called from OUnitRunner.run_one_test.(fun) in file "src/lib/ounit2/advanced/oUnitRunner.ml", line 83, characters 13-26
+
+Sys_error("data/3letter/words.txt: No such file or directory")
+------------------------------------------------------------------------------
+==============================================================================
+Error: Integration tests:1:full_game_with_real_dict.
+
+File "/Users/nancy/Desktop/FPSE_Wordle/_build/default/src-test/oUnit-Integration tests-Kehengs-MacBook-Pro.local#02.log", line 2, characters 1-1:
+Error: Integration tests:1:full_game_with_real_dict (in the log).
+
+Raised at Lib__Dict.load_dictionary in file "src/lib/dict.ml", line 31, characters 21-42
+Called from Lib__Dict.load_dictionary_by_length in file "src/lib/dict.ml", line 40, characters 16-42
+Called from Dune__exe__Integration_tests.test_full_game_with_real_dict in file "src-test/integration_tests.ml", line 31, characters 23-59
+Called from OUnitRunner.run_one_test.(fun) in file "src/lib/ounit2/advanced/oUnitRunner.ml", line 83, characters 13-26
+
+Sys_error("data/5letter/words.txt: No such file or directory")
+------------------------------------------------------------------------------
+==============================================================================
+Error: Integration tests:2:multiple_word_lengths_full_flow.
+
+File "/Users/nancy/Desktop/FPSE_Wordle/_build/default/src-test/oUnit-Integration tests-Kehengs-MacBook-Pro.local#01.log", line 12, characters 1-1:
+Error: Integration tests:2:multiple_word_lengths_full_flow (in the log).
+
+Raised at Lib__Dict.load_dictionary in file "src/lib/dict.ml", line 31, characters 21-42
+Called from Lib__Dict.load_dictionary_by_length in file "src/lib/dict.ml", line 40, characters 16-42
+Called from Dune__exe__Integration_tests.test_multiple_word_lengths_full_flow.test_length in file "src-test/integration_tests.ml", line 73, characters 25-66
+Called from Base__List0.iter in file "src/list0.ml", line 66, characters 4-7
+Called from OUnitRunner.run_one_test.(fun) in file "src/lib/ounit2/advanced/oUnitRunner.ml", line 83, characters 13-26
+
+Sys_error("data/3letter/words.txt: No such file or directory")
+------------------------------------------------------------------------------
+==============================================================================
+Error: Integration tests:0:multiple_dictionary_files.
+
+File "/Users/nancy/Desktop/FPSE_Wordle/_build/default/src-test/oUnit-Integration tests-Kehengs-MacBook-Pro.local#01.log", line 2, characters 1-1:
+Error: Integration tests:0:multiple_dictionary_files (in the log).
+
+Raised at Lib__Dict.load_dictionary in file "src/lib/dict.ml", line 31, characters 21-42
+Called from Lib__Dict.load_dictionary_by_length in file "src/lib/dict.ml", line 40, characters 16-42
+Called from Dune__exe__Integration_tests.test_multiple_dictionary_files.test_length in file "src-test/integration_tests.ml", line 9, characters 25-66
+Called from Base__List0.iter in file "src/list0.ml", line 66, characters 4-7
+Called from OUnitRunner.run_one_test.(fun) in file "src/lib/ounit2/advanced/oUnitRunner.ml", line 83, characters 13-26
+
+Sys_error("data/2letter/words.txt: No such file or directory")
+------------------------------------------------------------------------------
+Ran: 6 tests in: 0.11 seconds.
+FAILED: Cases: 6 Tried: 6 Errors: 6 Failures: 0 Skip:  0 Todo: 0 Timeouts: 0.
+File "src-test/dune", line 97, characters 8-20:
+97 |   (name config_tests)
+             ^^^^^^^^^^^^
+...EE.E
+==============================================================================
+Error: Config module tests:6:config_edge_lengths.
+
+File "/Users/nancy/Desktop/FPSE_Wordle/_build/default/src-test/oUnit-Config module tests-Kehengs-MacBook-Pro.local#01.log", line 27, characters 1-1:
+Error: Config module tests:6:config_edge_lengths (in the log).
+
+Raised at Lib__Dict.load_dictionary in file "src/lib/dict.ml", line 31, characters 21-42
+Called from Lib__Dict.load_dictionary_by_length in file "src/lib/dict.ml", line 40, characters 16-42
+Called from Dune__exe__Config_tests.test_config_edge_lengths in file "src-test/config_tests.ml", line 187, characters 20-56
+Called from OUnitRunner.run_one_test.(fun) in file "src/lib/ounit2/advanced/oUnitRunner.ml", line 83, characters 13-26
+
+Sys_error("data/2letter/words.txt: No such file or directory")
+------------------------------------------------------------------------------
+==============================================================================
+Error: Config module tests:5:multiple_configs_simultaneously.
+
+File "/Users/nancy/Desktop/FPSE_Wordle/_build/default/src-test/oUnit-Config module tests-Kehengs-MacBook-Pro.local#01.log", line 18, characters 1-1:
+Error: Config module tests:5:multiple_configs_simultaneously (in the log).
+
+Raised at Lib__Dict.load_dictionary in file "src/lib/dict.ml", line 31, characters 21-42
+Called from Lib__Dict.load_dictionary_by_length in file "src/lib/dict.ml", line 40, characters 16-42
+Called from Dune__exe__Config_tests.test_multiple_configs_simultaneously in file "src-test/config_tests.ml", line 120, characters 25-61
+Called from OUnitRunner.run_one_test.(fun) in file "src/lib/ounit2/advanced/oUnitRunner.ml", line 83, characters 13-26
+
+Sys_error("data/3letter/words.txt: No such file or directory")
+------------------------------------------------------------------------------
+==============================================================================
+Error: Config module tests:4:config_with_real_dictionaries.
+
+File "/Users/nancy/Desktop/FPSE_Wordle/_build/default/src-test/oUnit-Config module tests-Kehengs-MacBook-Pro.local#01.log", line 8, characters 1-1:
+Error: Config module tests:4:config_with_real_dictionaries (in the log).
+
+Raised at Lib__Dict.load_dictionary in file "src/lib/dict.ml", line 31, characters 21-42
+Called from Lib__Dict.load_dictionary_by_length in file "src/lib/dict.ml", line 40, characters 16-42
+Called from Dune__exe__Config_tests.test_config_with_real_dictionaries.test_config in file "src-test/config_tests.ml", line 97, characters 25-66
+Called from Dune__exe__Config_tests.test_config_with_real_dictionaries in file "src-test/config_tests.ml", line 107, characters 2-37
+Called from OUnitRunner.run_one_test.(fun) in file "src/lib/ounit2/advanced/oUnitRunner.ml", line 83, characters 13-26
+
+Sys_error("data/3letter/words.txt: No such file or directory")
+------------------------------------------------------------------------------
+Ran: 7 tests in: 0.13 seconds.
+FAILED: Cases: 7 Tried: 7 Errors: 3 Failures: 0 Skip:  0 Todo: 0 Timeouts: 0.
+File "src-test/dune", line 14, characters 8-18:
+14 |   (name dict_tests)
+             ^^^^^^^^^^
+..EE......EEEEEEEE
+==============================================================================
+Error: Dict module tests:17:word_count_consistency.
+
+File "/Users/nancy/Desktop/FPSE_Wordle/_build/default/src-test/oUnit-Dict module tests-Kehengs-MacBook-Pro.local#01.log", line 45, characters 1-1:
+Error: Dict module tests:17:word_count_consistency (in the log).
+
+Raised at Lib__Dict.load_dictionary in file "src/lib/dict.ml", line 31, characters 21-42
+Called from Lib__Dict.load_dictionary_by_length in file "src/lib/dict.ml", line 40, characters 16-42
+Called from Dune__exe__Dict_tests.test_word_count_consistency.(fun) in file "src-test/dict_tests.ml", line 249, characters 25-57
+Called from Base__List0.iter in file "src/list0.ml", line 66, characters 4-7
+Called from OUnitRunner.run_one_test.(fun) in file "src/lib/ounit2/advanced/oUnitRunner.ml", line 83, characters 13-26
+
+Sys_error("data/2letter/words.txt: No such file or directory")
+------------------------------------------------------------------------------
+==============================================================================
+Error: Dict module tests:16:filter_by_length_with_real_dictionaries.
+
+File "/Users/nancy/Desktop/FPSE_Wordle/_build/default/src-test/oUnit-Dict module tests-Kehengs-MacBook-Pro.local#02.log", line 60, characters 1-1:
+Error: Dict module tests:16:filter_by_length_with_real_dictionaries (in the log).
+
+Raised at Lib__Dict.load_dictionary in file "src/lib/dict.ml", line 31, characters 21-42
+Called from Lib__Dict.load_dictionary_by_length in file "src/lib/dict.ml", line 40, characters 16-42
+Called from Dune__exe__Dict_tests.test_filter_by_length_with_real_dictionaries in file "src-test/dict_tests.ml", line 232, characters 18-45
+Called from OUnitRunner.run_one_test.(fun) in file "src/lib/ounit2/advanced/oUnitRunner.ml", line 83, characters 13-26
+
+Sys_error("data/5letter/words.txt: No such file or directory")
+------------------------------------------------------------------------------
+==============================================================================
+Error: Dict module tests:15:normalize_word_consistency_across_files.
+
+File "/Users/nancy/Desktop/FPSE_Wordle/_build/default/src-test/oUnit-Dict module tests-Kehengs-MacBook-Pro.local#01.log", line 35, characters 1-1:
+Error: Dict module tests:15:normalize_word_consistency_across_files (in the log).
+
+Raised at Lib__Dict.load_dictionary in file "src/lib/dict.ml", line 31, characters 21-42
+Called from Lib__Dict.load_dictionary_by_length in file "src/lib/dict.ml", line 40, characters 16-42
+Called from Dune__exe__Dict_tests.test_normalize_word_consistency_across_files.(fun) in file "src-test/dict_tests.ml", line 217, characters 19-51
+Called from Base__List0.iter in file "src/list0.ml", line 66, characters 4-7
+Called from OUnitRunner.run_one_test.(fun) in file "src/lib/ounit2/advanced/oUnitRunner.ml", line 83, characters 13-26
+
+Sys_error("data/2letter/words.txt: No such file or directory")
+------------------------------------------------------------------------------
+==============================================================================
+Error: Dict module tests:14:random_word_from_multiple_files.
+
+File "/Users/nancy/Desktop/FPSE_Wordle/_build/default/src-test/oUnit-Dict module tests-Kehengs-MacBook-Pro.local#02.log", line 49, characters 1-1:
+Error: Dict module tests:14:random_word_from_multiple_files (in the log).
+
+Raised at Lib__Dict.load_dictionary in file "src/lib/dict.ml", line 31, characters 21-42
+Called from Lib__Dict.load_dictionary_by_length in file "src/lib/dict.ml", line 40, characters 16-42
+Called from Dune__exe__Dict_tests.test_random_word_from_multiple_files.(fun) in file "src-test/dict_tests.ml", line 204, characters 21-53
+Called from Base__List.map in file "src/list.ml", line 433, characters 15-18
+Called from Dune__exe__Dict_tests.test_random_word_from_multiple_files in file "src-test/dict_tests.ml", lines 203-206, characters 21-3
+Called from OUnitRunner.run_one_test.(fun) in file "src/lib/ounit2/advanced/oUnitRunner.ml", line 83, characters 13-26
+
+Sys_error("data/2letter/words.txt: No such file or directory")
+------------------------------------------------------------------------------
+==============================================================================
+Error: Dict module tests:13:answers_subset_consistency_all_lengths.
+
+File "/Users/nancy/Desktop/FPSE_Wordle/_build/default/src-test/oUnit-Dict module tests-Kehengs-MacBook-Pro.local#01.log", line 25, characters 1-1:
+Error: Dict module tests:13:answers_subset_consistency_all_lengths (in the log).
+
+Raised at Lib__Dict.load_dictionary in file "src/lib/dict.ml", line 31, characters 21-42
+Called from Lib__Dict.load_dictionary_by_length in file "src/lib/dict.ml", line 40, characters 16-42
+Called from Dune__exe__Dict_tests.test_answers_subset_consistency_all_lengths.(fun) in file "src-test/dict_tests.ml", line 189, characters 25-57
+Called from Base__List0.iter in file "src/list0.ml", line 66, characters 4-7
+Called from OUnitRunner.run_one_test.(fun) in file "src/lib/ounit2/advanced/oUnitRunner.ml", line 83, characters 13-26
+
+Sys_error("data/2letter/words.txt: No such file or directory")
+------------------------------------------------------------------------------
+==============================================================================
+Error: Dict module tests:12:cross_file_word_validation.
+
+File "/Users/nancy/Desktop/FPSE_Wordle/_build/default/src-test/oUnit-Dict module tests-Kehengs-MacBook-Pro.local#02.log", line 40, characters 1-1:
+Error: Dict module tests:12:cross_file_word_validation (in the log).
+
+Raised at Lib__Dict.load_dictionary in file "src/lib/dict.ml", line 31, characters 21-42
+Called from Lib__Dict.load_dictionary_by_length in file "src/lib/dict.ml", line 40, characters 16-42
+Called from Dune__exe__Dict_tests.test_cross_file_word_validation in file "src-test/dict_tests.ml", line 158, characters 18-45
+Called from OUnitRunner.run_one_test.(fun) in file "src/lib/ounit2/advanced/oUnitRunner.ml", line 83, characters 13-26
+
+Sys_error("data/3letter/words.txt: No such file or directory")
+------------------------------------------------------------------------------
+==============================================================================
+Error: Dict module tests:11:load_all_dictionary_files.
+
+File "/Users/nancy/Desktop/FPSE_Wordle/_build/default/src-test/oUnit-Dict module tests-Kehengs-MacBook-Pro.local#01.log", line 14, characters 1-1:
+Error: Dict module tests:11:load_all_dictionary_files (in the log).
+
+Raised at Lib__Dict.load_dictionary in file "src/lib/dict.ml", line 31, characters 21-42
+Called from Lib__Dict.load_dictionary_by_length in file "src/lib/dict.ml", line 40, characters 16-42
+Called from Dune__exe__Dict_tests.test_load_all_dictionary_files.(fun) in file "src-test/dict_tests.ml", line 137, characters 25-57
+Called from Base__List.map in file "src/list.ml", line 433, characters 15-18
+Called from Dune__exe__Dict_tests.test_load_all_dictionary_files in file "src-test/dict_tests.ml", lines 136-139, characters 18-3
+Called from OUnitRunner.run_one_test.(fun) in file "src/lib/ounit2/advanced/oUnitRunner.ml", line 83, characters 13-26
+
+Sys_error("data/2letter/words.txt: No such file or directory")
+------------------------------------------------------------------------------
+==============================================================================
+Error: Dict module tests:10:load_dictionary_filters_empty_lines.
+
+File "/Users/nancy/Desktop/FPSE_Wordle/_build/default/src-test/oUnit-Dict module tests-Kehengs-MacBook-Pro.local#02.log", line 32, characters 1-1:
+Error: Dict module tests:10:load_dictionary_filters_empty_lines (in the log).
+
+Raised at Lib__Dict.load_dictionary in file "src/lib/dict.ml", line 31, characters 21-42
+Called from Dune__exe__Dict_tests.test_load_dictionary_filters_empty_lines in file "src-test/dict_tests.ml", line 124, characters 14-54
+Called from OUnitRunner.run_one_test.(fun) in file "src/lib/ounit2/advanced/oUnitRunner.ml", line 83, characters 13-26
+
+Sys_error("data/5letter/words.txt: No such file or directory")
+------------------------------------------------------------------------------
+==============================================================================
+Error: Dict module tests:4:load_dictionary_by_length.
+
+File "/Users/nancy/Desktop/FPSE_Wordle/_build/default/src-test/oUnit-Dict module tests-Kehengs-MacBook-Pro.local#02.log", line 13, characters 1-1:
+Error: Dict module tests:4:load_dictionary_by_length (in the log).
+
+Raised at Lib__Dict.load_dictionary in file "src/lib/dict.ml", line 31, characters 21-42
+Called from Lib__Dict.load_dictionary_by_length in file "src/lib/dict.ml", line 40, characters 16-42
+Called from Dune__exe__Dict_tests.test_load_dictionary_by_length.test_length in file "src-test/dict_tests.ml", line 58, characters 25-52
+Called from Base__List0.iter in file "src/list0.ml", line 66, characters 4-7
+Called from OUnitRunner.run_one_test.(fun) in file "src/lib/ounit2/advanced/oUnitRunner.ml", line 83, characters 13-26
+
+Sys_error("data/2letter/words.txt: No such file or directory")
+------------------------------------------------------------------------------
+==============================================================================
+Error: Dict module tests:3:load_dictionary.
+
+File "/Users/nancy/Desktop/FPSE_Wordle/_build/default/src-test/oUnit-Dict module tests-Kehengs-MacBook-Pro.local#02.log", line 5, characters 1-1:
+Error: Dict module tests:3:load_dictionary (in the log).
+
+Raised at Lib__Dict.load_dictionary in file "src/lib/dict.ml", line 31, characters 21-42
+Called from Dune__exe__Dict_tests.test_load_dictionary in file "src-test/dict_tests.ml", line 47, characters 14-54
+Called from OUnitRunner.run_one_test.(fun) in file "src/lib/ounit2/advanced/oUnitRunner.ml", line 83, characters 13-26
+
+Sys_error("data/5letter/words.txt: No such file or directory")
+------------------------------------------------------------------------------
+Ran: 18 tests in: 0.14 seconds.
+FAILED: Cases: 18 Tried: 18 Errors: 10 Failures: 0 Skip:  0 Todo: 0 Timeouts: 0.
+File "src-test/dune", line 65, characters 8-28:
+65 |   (name wordle_functor_tests)
+             ^^^^^^^^^^^^^^^^^^^^
+........E.
+==============================================================================
+Error: Wordle_functor module tests:9:with_real_dictionaries.
+
+File "/Users/nancy/Desktop/FPSE_Wordle/_build/default/src-test/oUnit-Wordle_functor module tests-Kehengs-MacBook-Pro.local#01.log", line 14, characters 1-1:
+Error: Wordle_functor module tests:9:with_real_dictionaries (in the log).
+
+Raised at Lib__Dict.load_dictionary in file "src/lib/dict.ml", line 31, characters 21-42
+Called from Lib__Dict.load_dictionary_by_length in file "src/lib/dict.ml", line 40, characters 16-42
+Called from Dune__exe__Wordle_functor_tests.test_with_real_dictionaries in file "src-test/wordle_functor_tests.ml", line 157, characters 23-59
+Called from OUnitRunner.run_one_test.(fun) in file "src/lib/ounit2/advanced/oUnitRunner.ml", line 83, characters 13-26
+
+Sys_error("data/5letter/words.txt: No such file or directory")
+------------------------------------------------------------------------------
+Ran: 10 tests in: 0.15 seconds.
+FAILED: Cases: 10 Tried: 10 Errors: 1 Failures: 0 Skip:  0 Todo: 0 Timeouts: 0.

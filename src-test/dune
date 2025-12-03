@@ -20,6 +20,7 @@
     lib
   )
   (deps (glob_files_rec ../data/**))
+  (action (chdir %{workspace_root} (run %{test})))
   (preprocess (pps ppx_jane)))
 
 (test
@@ -30,4 +31,80 @@
     ounit2
     lib
   )
+  (preprocess (pps ppx_jane)))
+
+(test
+  (name game_tests)
+  (modules game_tests)
+  (libraries
+    core
+    ounit2
+    lib
+  )
+  (preprocess (pps ppx_jane)))
+
+(test
+  (name utils_tests)
+  (modules utils_tests)
+  (libraries
+    core
+    ounit2
+    lib
+  )
+  (preprocess (pps ppx_jane)))
+
+(test
+  (name solver_tests)
+  (modules solver_tests)
+  (libraries
+    core
+    ounit2
+    lib
+  )
+  (preprocess (pps ppx_jane)))
+
+(test
+  (name wordle_functor_tests)
+  (modules wordle_functor_tests)
+  (libraries
+    core
+    ounit2
+    lib
+  )
+  (deps (glob_files_rec ../data/**))
+  (action (chdir %{workspace_root} (run %{test})))
+  (preprocess (pps ppx_jane)))
+
+(test
+  (name feedback_tests)
+  (modules feedback_tests)
+  (libraries
+    core
+    ounit2
+    lib
+  )
+  (preprocess (pps ppx_jane)))
+
+(test
+  (name integration_tests)
+  (modules integration_tests)
+  (libraries
+    core
+    ounit2
+    lib
+  )
+  (deps (glob_files_rec ../data/**))
+  (action (chdir %{workspace_root} (run %{test})))
+  (preprocess (pps ppx_jane)))
+
+(test
+  (name config_tests)
+  (modules config_tests)
+  (libraries
+    core
+    ounit2
+    lib
+  )
+  (deps (glob_files_rec ../data/**))
+  (action (chdir %{workspace_root} (run %{test})))
   (preprocess (pps ppx_jane)))

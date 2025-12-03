@@ -9,6 +9,33 @@ end
 
 module Guess5 = Lib.Guess.Make (Config5)
 
+(* Direct tests for top-level implementation functions *)
+let test_color_to_string_impl_green _ =
+  assert_equal "G" (Lib.Guess.color_to_string_impl Lib.Feedback.Green) ~printer:Fn.id
+
+let test_color_to_string_impl_yellow _ =
+  assert_equal "Y" (Lib.Guess.color_to_string_impl Lib.Feedback.Yellow) ~printer:Fn.id
+
+let test_color_to_string_impl_grey _ =
+  assert_equal "." (Lib.Guess.color_to_string_impl Lib.Feedback.Grey) ~printer:Fn.id
+
+let test_colors_to_string_impl _ =
+  let colors = [Lib.Feedback.Green; Lib.Feedback.Yellow; Lib.Feedback.Grey] in
+  assert_equal "GY." (Lib.Guess.colors_to_string_impl colors) ~printer:Fn.id
+
+let test_to_string_impl _ =
+  let feedback = { Lib.Feedback.guess = "HELLO"; colors = [Lib.Feedback.Green; Lib.Feedback.Grey; Lib.Feedback.Grey; Lib.Feedback.Green; Lib.Feedback.Grey] } in
+  assert_equal "HELLO: G..G." (Lib.Guess.to_string_impl feedback) ~printer:Fn.id
+
+let test_is_correct_impl_true _ =
+  let feedback = { Lib.Feedback.guess = "HELLO"; colors = [Lib.Feedback.Green; Lib.Feedback.Green; Lib.Feedback.Green; Lib.Feedback.Green; Lib.Feedback.Green] } in
+  assert_bool "Should be correct" (Lib.Guess.is_correct_impl feedback)
+
+let test_is_correct_impl_false _ =
+  let feedback = { Lib.Feedback.guess = "HELLO"; colors = [Lib.Feedback.Green; Lib.Feedback.Yellow; Lib.Feedback.Grey; Lib.Feedback.Green; Lib.Feedback.Grey] } in
+  assert_bool "Should not be correct" (not (Lib.Guess.is_correct_impl feedback))
+
+(* Helper function to convert color list to string for easier comparison *)
 let color_list_to_string colors =
   List.map colors ~f:(function
     | Guess5.Green -> "G"
