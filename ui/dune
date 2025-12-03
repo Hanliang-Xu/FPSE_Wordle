@@ -1,0 +1,5 @@
+(executable
+ (name wordle_web)
+ (libraries dream lib core core_unix str)
+ (preprocess (pps ppx_jane lwt_ppx)))
+
