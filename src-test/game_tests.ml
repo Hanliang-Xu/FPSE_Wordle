@@ -18,6 +18,7 @@ module MockGuess = struct
     {
       guess;
       colors = generate guess answer;
+      distances = None;
     }
   
   let is_correct feedback =

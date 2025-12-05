@@ -24,15 +24,15 @@ let test_colors_to_string_impl _ =
   assert_equal "GY." (Lib.Guess.colors_to_string_impl colors) ~printer:Fn.id
 
 let test_to_string_impl _ =
-  let feedback = { Lib.Feedback.guess = "HELLO"; colors = [Lib.Feedback.Green; Lib.Feedback.Grey; Lib.Feedback.Grey; Lib.Feedback.Green; Lib.Feedback.Grey] } in
+  let feedback = { Lib.Feedback.guess = "HELLO"; colors = [Lib.Feedback.Green; Lib.Feedback.Grey; Lib.Feedback.Grey; Lib.Feedback.Green; Lib.Feedback.Grey]; distances = None } in
   assert_equal "HELLO: G..G." (Lib.Guess.to_string_impl feedback) ~printer:Fn.id
 
 let test_is_correct_impl_true _ =
-  let feedback = { Lib.Feedback.guess = "HELLO"; colors = [Lib.Feedback.Green; Lib.Feedback.Green; Lib.Feedback.Green; Lib.Feedback.Green; Lib.Feedback.Green] } in
+  let feedback = { Lib.Feedback.guess = "HELLO"; colors = [Lib.Feedback.Green; Lib.Feedback.Green; Lib.Feedback.Green; Lib.Feedback.Green; Lib.Feedback.Green]; distances = None } in
   assert_bool "Should be correct" (Lib.Guess.is_correct_impl feedback)
 
 let test_is_correct_impl_false _ =
-  let feedback = { Lib.Feedback.guess = "HELLO"; colors = [Lib.Feedback.Green; Lib.Feedback.Yellow; Lib.Feedback.Grey; Lib.Feedback.Green; Lib.Feedback.Grey] } in
+  let feedback = { Lib.Feedback.guess = "HELLO"; colors = [Lib.Feedback.Green; Lib.Feedback.Yellow; Lib.Feedback.Grey; Lib.Feedback.Green; Lib.Feedback.Grey]; distances = None } in
   assert_bool "Should not be correct" (not (Lib.Guess.is_correct_impl feedback))
 
 (* Helper function to convert color list to string for easier comparison *)
@@ -478,6 +478,11 @@ let word_length_tests =
 
 let string_conversion_tests =
   "String Conversion Tests" >::: [
+    "color_to_string_impl_green" >:: test_color_to_string_impl_green;
+    "color_to_string_impl_yellow" >:: test_color_to_string_impl_yellow;
+    "color_to_string_impl_grey" >:: test_color_to_string_impl_grey;
+    "colors_to_string_impl" >:: test_colors_to_string_impl;
+    "to_string_impl" >:: test_to_string_impl;
     "color_to_string_green" >:: test_color_to_string_green;
     "color_to_string_yellow" >:: test_color_to_string_yellow;
     "color_to_string_grey" >:: test_color_to_string_grey;
@@ -494,6 +499,8 @@ let string_conversion_tests =
 
 let is_correct_tests =
   "Is Correct Tests" >::: [
+    "impl_true" >:: test_is_correct_impl_true;
+    "impl_false" >:: test_is_correct_impl_false;
     "true" >:: test_is_correct_true;
     "with_yellow" >:: test_is_correct_with_yellow;
     "with_grey" >:: test_is_correct_with_grey;

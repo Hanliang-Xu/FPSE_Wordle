@@ -24,7 +24,7 @@ let test_color_list _ =
 
 (** Test feedback type *)
 let test_feedback_type _ =
-  let feedback = { guess = "hello"; colors = [Green; Green; Green; Green; Green] } in
+  let feedback = { guess = "hello"; colors = [Green; Green; Green; Green; Green]; distances = None } in
   assert_equal "hello" feedback.guess ~printer:Fn.id;
   assert_equal 5 (List.length feedback.colors);
   assert_bool "All colors should be Green" 
@@ -33,7 +33,8 @@ let test_feedback_type _ =
 let test_feedback_with_mixed_colors _ =
   let feedback = { 
     guess = "world"; 
-    colors = [Green; Yellow; Grey; Green; Yellow] 
+    colors = [Green; Yellow; Grey; Green; Yellow];
+    distances = None
   } in
   assert_equal "world" feedback.guess ~printer:Fn.id;
   assert_equal 5 (List.length feedback.colors);
@@ -45,21 +46,22 @@ let test_feedback_with_mixed_colors _ =
   assert_equal 1 grey_count
 
 let test_feedback_empty_colors _ =
-  let feedback = { guess = "test"; colors = [] } in
+  let feedback = { guess = "test"; colors = []; distances = None } in
   assert_equal "test" feedback.guess ~printer:Fn.id;
   assert_equal 0 (List.length feedback.colors)
 
 let test_feedback_different_lengths _ =
   (* Test feedback with different word lengths *)
-  let feedback3 = { guess = "cat"; colors = [Green; Yellow; Grey] } in
+  let feedback3 = { guess = "cat"; colors = [Green; Yellow; Grey]; distances = None } in
   assert_equal 3 (List.length feedback3.colors);
   
-  let feedback5 = { guess = "hello"; colors = [Green; Green; Green; Green; Green] } in
+  let feedback5 = { guess = "hello"; colors = [Green; Green; Green; Green; Green]; distances = None } in
   assert_equal 5 (List.length feedback5.colors);
   
   let feedback7 = { 
     guess = "example"; 
-    colors = [Green; Yellow; Grey; Green; Yellow; Grey; Green] 
+    colors = [Green; Yellow; Grey; Green; Yellow; Grey; Green];
+    distances = None
   } in
   assert_equal 7 (List.length feedback7.colors)
 
@@ -68,7 +70,8 @@ let test_feedback_all_green _ =
   (* Test feedback with all green (correct guess) *)
   let feedback = { 
     guess = "hello"; 
-    colors = [Green; Green; Green; Green; Green] 
+    colors = [Green; Green; Green; Green; Green];
+    distances = None
   } in
   assert_equal "hello" feedback.guess;
   assert_equal 5 (List.length feedback.colors);
@@ -79,7 +82,8 @@ let test_feedback_all_grey _ =
   (* Test feedback with all grey (no correct letters) *)
   let feedback = { 
     guess = "xyzzy"; 
-    colors = [Grey; Grey; Grey; Grey; Grey] 
+    colors = [Grey; Grey; Grey; Grey; Grey];
+    distances = None
   } in
   assert_equal "xyzzy" feedback.guess;
   assert_equal 5 (List.length feedback.colors);
@@ -90,7 +94,8 @@ let test_feedback_all_yellow _ =
   (* Test feedback with all yellow (all letters wrong position) *)
   let feedback = { 
     guess = "abcde"; 
-    colors = [Yellow; Yellow; Yellow; Yellow; Yellow] 
+    colors = [Yellow; Yellow; Yellow; Yellow; Yellow];
+    distances = None
   } in
   assert_equal "abcde" feedback.guess;
   assert_equal 5 (List.length feedback.colors);
@@ -106,7 +111,7 @@ let test_feedback_mixed_patterns _ =
     ([Green; Grey; Yellow; Grey; Green], "pattern4");
   ] in
   List.iter patterns ~f:(fun (colors, name) ->
-    let feedback = { guess = "test"; colors } in
+    let feedback = { guess = "test"; colors; distances = None } in
     assert_equal (List.length colors) (List.length feedback.colors);
     assert_bool (Printf.sprintf "Pattern %s should have correct length" name)
       (List.length feedback.colors = List.length colors)
@@ -114,14 +119,15 @@ let test_feedback_mixed_patterns _ =
 
 let test_feedback_edge_case_lengths _ =
   (* Test feedback with edge case word lengths *)
-  let feedback2 = { guess = "ab"; colors = [Green; Grey] } in
+  let feedback2 = { guess = "ab"; colors = [Green; Grey]; distances = None } in
   assert_equal 2 (List.length feedback2.colors);
   
   let feedback10 = { 
     guess = "abcdefghij"; 
     colors = List.init 10 ~f:(fun i -> 
       if i mod 2 = 0 then Green else Yellow
-    )
+    );
+    distances = None
   } in
   assert_equal 10 (List.length feedback10.colors);
   assert_equal 5 (List.count feedback10.colors ~f:(function Green -> true | _ -> false));
@@ -131,7 +137,8 @@ let test_feedback_consistency _ =
   (* Test that feedback structure is consistent *)
   let feedback = { 
     guess = "hello"; 
-    colors = [Green; Yellow; Grey; Green; Yellow] 
+    colors = [Green; Yellow; Grey; Green; Yellow];
+    distances = None
   } in
   (* Guess and colors should have matching lengths *)
   assert_equal (String.length feedback.guess) (List.length feedback.colors);
@@ -142,8 +149,8 @@ let test_feedback_consistency _ =
 
 let test_feedback_immutability _ =
   (* Test that feedback can be created with different values *)
-  let feedback1 = { guess = "hello"; colors = [Green; Green; Green; Green; Green] } in
-  let feedback2 = { guess = "world"; colors = [Grey; Grey; Grey; Grey; Grey] } in
+  let feedback1 = { guess = "hello"; colors = [Green; Green; Green; Green; Green]; distances = None } in
+  let feedback2 = { guess = "world"; colors = [Grey; Grey; Grey; Grey; Grey]; distances = None } in
   (* They should be independent *)
   assert_equal "hello" feedback1.guess;
   assert_equal "world" feedback2.guess;
@@ -156,7 +163,8 @@ let test_feedback_with_duplicate_letters _ =
   (* Test feedback structure with words that have duplicate letters *)
   let feedback = { 
     guess = "hello"; 
-    colors = [Green; Yellow; Grey; Grey; Yellow] 
+    colors = [Green; Yellow; Grey; Grey; Yellow];
+    distances = None
   } in
   (* 'l' appears twice in "hello" *)
   assert_equal 5 (List.length feedback.colors);
@@ -169,7 +177,8 @@ let test_feedback_color_distribution _ =
   (* Test counting colors in feedback *)
   let feedback = { 
     guess = "test"; 
-    colors = [Green; Yellow; Grey; Green] 
+    colors = [Green; Yellow; Grey; Green];
+    distances = None
   } in
   let green_count = List.count feedback.colors ~f:(function Green -> true | _ -> false) in
   let yellow_count = List.count feedback.colors ~f:(function Yellow -> true | _ -> false) in
@@ -192,7 +201,7 @@ let test_feedback_with_real_wordle_scenarios _ =
     ("ecran", [Yellow; Yellow; Yellow; Yellow; Yellow], "all_wrong_position");
   ] in
   List.iter scenarios ~f:(fun (guess, colors, name) ->
-    let feedback = { guess; colors } in
+    let feedback = { guess; colors; distances = None } in
     assert_equal (String.length guess) (List.length colors);
     assert_bool (Printf.sprintf "Scenario %s should be valid" name)
       (String.length feedback.guess = List.length feedback.colors)

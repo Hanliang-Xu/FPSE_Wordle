@@ -8,16 +8,19 @@ open OUnit2
 module Config3 = struct
   let word_length = 3
   let feedback_granularity = Lib.Config.ThreeState
+  let show_position_distances = false
 end
 
 module Config5 = struct
   let word_length = 5
   let feedback_granularity = Lib.Config.ThreeState
+  let show_position_distances = false
 end
 
 module Config7 = struct
   let word_length = 7
   let feedback_granularity = Lib.Config.Binary
+  let show_position_distances = false
 end
 
 module Utils3 = Lib.Utils.Make (Config3)
