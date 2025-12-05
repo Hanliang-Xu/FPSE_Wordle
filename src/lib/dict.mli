@@ -4,15 +4,14 @@
     with supporting functions for loading, filtering, validating, and selecting words.
     
     Important Notes:
-    - answers.txt is the subset of words.txt
-      All words in answers.txt are also present in words.txt.
-      Players can guess any word from words.txt, but answers are only 
-      selected from answers.txt.
+    - Words are loaded from Random Word API (for guesses)
+    - Answers are loaded from local files (answers.txt)
+    - Players can guess any word from the API, but answers are only 
+      selected from answers.txt files.
     
     - answers.txt include common/fair words
       answers.txt contains only common/fair words to ensure a fair and 
-      enjoyable game experience. words.txt can include more obscure words 
-      that players can use for strategic guessing.
+      enjoyable game experience.
     
     Supported word lengths: 2, 3, 4, 5, 6, 7, 8, 9, 10 letters
 *)
@@ -21,13 +20,6 @@ val load_dictionary : string -> string list
 (** [load_dictionary filename] reads words from [filename] and returns a list
     of all words found in the file.
     Raises [Sys_error] if the file cannot be read. *)
-
-val load_dictionary_by_length : int -> (string list * string list)
-(** [load_dictionary_by_length n] loads both words and answers dictionaries 
-    for n-letter words. Returns (words, answers) tuple.
-    Requires: 2 <= n <= 10
-    Raises [Invalid_argument] if n is out of range.
-    Raises [Sys_error] if dictionary files cannot be read. *)
 
 val filter_by_length : string list -> int -> string list
 (** [filter_by_length words n] filters a list of words to only include

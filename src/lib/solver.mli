@@ -7,7 +7,7 @@ module Make (G : Guess.S) : sig
 
   val create : string list -> t
   (** [create word_list] creates a new solver initialized with the given word list.
-      The word list should contain all possible candidate words (typically from words.txt).
+      The word list should contain all possible candidate words (typically from API or answers.txt).
       The solver will filter these based on feedback using a frequency-based strategy. *)
 
   val make_guess : t -> string
