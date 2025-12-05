@@ -10,7 +10,6 @@ open Lib
 type game_config = {
   word_length: int;
   max_guesses: int;
-  show_hints: bool;
   feedback_granularity: Config.feedback_granularity;
   show_position_distances: bool;
 }
@@ -187,7 +186,6 @@ let new_game_handler request =
       {
         word_length = json |> member "wordLength" |> to_int_option |> Option.value ~default:5;
         max_guesses = json |> member "maxGuesses" |> to_int_option |> Option.value ~default:6;
-        show_hints = json |> member "showHints" |> to_bool_option |> Option.value ~default:true;
         feedback_granularity = (
           match json |> member "feedbackMode" |> to_string_option with
           | Some "binary" -> Config.Binary
@@ -196,7 +194,7 @@ let new_game_handler request =
         show_position_distances = json |> member "showDistances" |> to_bool_option |> Option.value ~default:false;
       }
     with _ -> 
-      { word_length = 5; max_guesses = 6; show_hints = true; feedback_granularity = Config.ThreeState; show_position_distances = false }
+      { word_length = 5; max_guesses = 6; feedback_granularity = Config.ThreeState; show_position_distances = false }
   in
   
   try 
@@ -212,7 +210,7 @@ let guess_handler request =
   let%lwt body = Dream.body request in
   match !current_game with
   | None -> 
-      start_game { word_length=5; max_guesses=6; show_hints=true; feedback_granularity=Config.ThreeState; show_position_distances=false };
+      start_game { word_length=5; max_guesses=6; feedback_granularity=Config.ThreeState; show_position_distances=false };
       Dream.json ~status:`Bad_Request "{\"status\":\"error\",\"message\":\"No active game (started default)\"}"
   | Some (module Active) ->
       let guess = 
@@ -430,12 +428,6 @@ let index_handler _request =
                             <option value="standard">Three-State (Standard)</option>
                             <option value="binary">Binary (Hard Mode)</option>
                         </select>
-                    </div>
-                    <div class="setting-item">
-                        <div class="checkbox-control">
-                            <input type="checkbox" id="showHints" checked>
-                            <label for="showHints">Show Solver Hints</label>
-                        </div>
                     </div>
                     <div class="setting-item">
                         <div class="checkbox-control">

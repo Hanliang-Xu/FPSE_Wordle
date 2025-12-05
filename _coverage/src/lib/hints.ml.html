@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8"/>
     <title>hints.ml &mdash; Coverage report</title>
-    <meta name="description" content="90.11% coverage in src/lib/hints.ml">
+    <meta name="description" content="98.90% coverage in src/lib/hints.ml">
     <link rel="stylesheet" href="../../coverage.css"/>
     <script src="../../highlight.pack.js"></script>
     <script>hljs.initHighlightingOnLoad();</script>
@@ -15,16 +15,9 @@
           <span class="dirname">src/lib/</span>hints.ml
         </a>
       </h1>
-      <h2>90.11%</h2>
+      <h2>98.90%</h2>
     </div>
     <div id="navbar">
-      <span class="unvisited" style="bottom:14.97%"></span>
-      <span class="unvisited" style="bottom:12.24%"></span>
-      <span class="unvisited" style="bottom:10.88%"></span>
-      <span class="unvisited" style="bottom:10.20%"></span>
-      <span class="unvisited" style="bottom:6.12%"></span>
-      <span class="unvisited" style="bottom:4.08%"></span>
-      <span class="unvisited" style="bottom:3.40%"></span>
       <span class="unvisited" style="bottom:2.04%"></span>
     </div>
     <div id="report">
@@ -154,24 +147,24 @@
 <a id="L122"></a><span class="visited"> </span>
 <a id="L123"></a><span class="visited"> </span>
 <a id="L124"></a><span > </span>
-<a id="L125"></a><span class="unvisited"> </span>
+<a id="L125"></a><span class="visited"> </span>
 <a id="L126"></a><span > </span>
 <a id="L127"></a><span > </span>
 <a id="L128"></a><span > </span>
-<a id="L129"></a><span class="unvisited"> </span>
+<a id="L129"></a><span class="visited"> </span>
 <a id="L130"></a><span > </span>
-<a id="L131"></a><span class="unvisited"> </span>
-<a id="L132"></a><span class="unvisited"> </span>
+<a id="L131"></a><span class="visited"> </span>
+<a id="L132"></a><span class="visited"> </span>
 <a id="L133"></a><span > </span>
 <a id="L134"></a><span > </span>
 <a id="L135"></a><span > </span>
 <a id="L136"></a><span > </span>
 <a id="L137"></a><span > </span>
-<a id="L138"></a><span class="unvisited"> </span>
+<a id="L138"></a><span class="visited"> </span>
 <a id="L139"></a><span > </span>
 <a id="L140"></a><span > </span>
-<a id="L141"></a><span class="unvisited"> </span>
-<a id="L142"></a><span class="unvisited"> </span>
+<a id="L141"></a><span class="visited"> </span>
+<a id="L142"></a><span class="visited"> </span>
 <a id="L143"></a><span > </span>
 <a id="L144"></a><span class="unvisited"> </span>
 <a id="L145"></a><span > </span>
@@ -341,76 +334,76 @@ type cumulative_hints = {
 
 (** Generate hint mode 1: correct letter in correct position *)
 let generate_hint_mode1 ~answer ~guesses_with_colors =
-  <span data-count="14">l</span>et word_length = String.length answer in
+  <span data-count="10">l</span>et word_length = String.length answer in
   (* Find positions that are not yet revealed as Green *)
-  <span data-count="14">l</span>et revealed_positions = 
-    List.fold guesses_with_colors ~init:(Set.empt<span data-count="14">y</span> (module Int)) ~f:(fun acc (_, colors) -&gt;
-      <span data-count="18">L</span>ist.foldi colors ~init:acc ~f:(fun idx acc' color -&gt;
-        <span data-count="90">m</span>atch color with
-        | <span data-count="17">F</span>eedback.Green -&gt; Set.add acc' idx
-        | <span data-count="73">_</span> -&gt; acc'
+  <span data-count="10">l</span>et revealed_positions = 
+    List.fold guesses_with_colors ~init:(Set.empt<span data-count="10">y</span> (module Int)) ~f:(fun acc (_, colors) -&gt;
+      <span data-count="8">L</span>ist.foldi colors ~init:acc ~f:(fun idx acc' color -&gt;
+        <span data-count="40">m</span>atch color with
+        | <span data-count="16">F</span>eedback.Green -&gt; Set.add acc' idx
+        | <span data-count="24">_</span> -&gt; acc'
       )
     )
   in
   (* Find a position that hasn't been revealed yet *)
-  <span data-count="14">l</span>et available_positions = 
-    List.filter (List.rang<span data-count="14">e</span> 0 word_length) ~f:(fun pos -&gt;
-      <span data-count="70">n</span>ot (Set.me<span data-count="70">m</span> revealed_positions pos)
+  <span data-count="10">l</span>et available_positions = 
+    List.filter (List.rang<span data-count="10">e</span> 0 word_length) ~f:(fun pos -&gt;
+      <span data-count="50">n</span>ot (Set.me<span data-count="50">m</span> revealed_positions pos)
     )
   in
-  <span data-count="14">m</span>atch available_positions with
+  <span data-count="10">m</span>atch available_positions with
   | <span data-count="2">[</span>] -&gt; 
       (* All positions revealed, pick any position *)
       let pos = Random.int word_length in
       <span data-count="2">(</span>pos, String.ge<span data-count="2">t</span> answer pos)
-  | <span data-count="12">p</span>ositions -&gt;
-      let pos = List.nth_exn positions (Random.in<span data-count="12">t</span> (List.lengt<span data-count="12">h</span> positions)) in
-      <span data-count="12">(</span>pos, String.ge<span data-count="12">t</span> answer pos)
+  | <span data-count="8">p</span>ositions -&gt;
+      let pos = List.nth_exn positions (Random.in<span data-count="8">t</span> (List.lengt<span data-count="8">h</span> positions)) in
+      <span data-count="8">(</span>pos, String.ge<span data-count="8">t</span> answer pos)
 
 (** Generate hint mode 2: correct letter without position *)
 let generate_hint_mode2 ~answer ~guesses_with_colors =
   (* Collect all letters that have been revealed as Green or Yellow *)
-  <span data-count="8">l</span>et revealed_letters = 
-    List.fold guesses_with_colors ~init:(Set.empt<span data-count="8">y</span> (module Char)) ~f:(fun acc (guess, colors) -&gt;
-      <span data-count="6">L</span>ist.fold2_exn (String.to_lis<span data-count="6">t</span> guess) colors ~init:acc ~f:(fun acc' char color -&gt;
-        <span data-count="30">m</span>atch color with
-        | <span data-count="14">F</span>eedback.Green | <span data-count="2">F</span>eedback.Yellow -&gt; Set.add acc' char
+  <span data-count="10">l</span>et revealed_letters = 
+    List.fold guesses_with_colors ~init:(Set.empt<span data-count="10">y</span> (module Char)) ~f:(fun acc (guess, colors) -&gt;
+      <span data-count="7">L</span>ist.fold2_exn (String.to_lis<span data-count="7">t</span> guess) colors ~init:acc ~f:(fun acc' char color -&gt;
+        <span data-count="35">m</span>atch color with
+        | <span data-count="19">F</span>eedback.Green | <span data-count="2">F</span>eedback.Yellow -&gt; Set.add acc' char
         | <span data-count="14">_</span> -&gt; acc'
       )
     )
   in
   (* Find a letter in answer that hasn't been revealed yet *)
-  <span data-count="8">l</span>et answer_letters = String.to_lis<span data-count="8">t</span> answer |&gt; List.dedup_and_sort ~compare:Char.compare in
-  <span data-count="8">l</span>et unrevealed_letters = 
-    List.filter answer_letters ~f:(fun c -&gt; <span data-count="32">n</span>ot (Set.me<span data-count="32">m</span> revealed_letters c))
+  <span data-count="10">l</span>et answer_letters = String.to_lis<span data-count="10">t</span> answer |&gt; List.dedup_and_sort ~compare:Char.compare in
+  <span data-count="10">l</span>et unrevealed_letters = 
+    List.filter answer_letters ~f:(fun c -&gt; <span data-count="41">n</span>ot (Set.me<span data-count="41">m</span> revealed_letters c))
   in
-  <span data-count="8">m</span>atch unrevealed_letters with
-  | <span data-count="2">[</span>] -&gt;
+  <span data-count="10">m</span>atch unrevealed_letters with
+  | <span data-count="3">[</span>] -&gt;
       (* All letters revealed, pick any letter from answer *)
-      let idx = Random.int (String.lengt<span data-count="2">h</span> answer) in
-      <span data-count="2">S</span>tring.get answer idx
-  | <span data-count="6">l</span>etters -&gt;
-      List.nth_exn letters (Random.in<span data-count="6">t</span> (List.lengt<span data-count="6">h</span> letters))
+      let idx = Random.int (String.lengt<span data-count="3">h</span> answer) in
+      <span data-count="3">S</span>tring.get answer idx
+  | <span data-count="7">l</span>etters -&gt;
+      List.nth_exn letters (Random.in<span data-count="7">t</span> (List.lengt<span data-count="7">h</span> letters))
 
 (** Display all cumulative hints *)
 let display_cumulative_hints ~word_length hints =
-  <span data-count="21">i</span>f List.is_empt<span data-count="21">y</span> hints.mode1_hints &amp;&amp; <span data-count="10">L</span>ist.is_empt<span data-count="10">y</span> hints.mode2_hints then
-    <span data-count="8">(</span>)
-  else <span data-count="13">(</span>
+  <span data-count="12">i</span>f List.is_empt<span data-count="12">y</span> hints.mode1_hints &amp;&amp; <span data-count="8">L</span>ist.is_empt<span data-count="8">y</span> hints.mode2_hints then
+    <span data-count="5">(</span>)
+  else <span data-count="7">(</span>
     (* Display mode 1 hints (position hints) *)
-    if not (List.is_empt<span data-count="13">y</span> hints.mode1_hints) then <span data-count="11">(</span>
+    if not (List.is_empt<span data-count="7">y</span> hints.mode1_hints) then <span data-count="4">(</span>
       let hint_display = 
-        List.fold hints.mode1_hints ~init:(String.ini<span data-count="11">t</span> word_length ~f:(fun _ -&gt; <span data-count="55">'</span>_'))
+        List.fold hints.mode1_hints ~init:(String.ini<span data-count="4">t</span> word_length ~f:(fun _ -&gt; <span data-count="20">'</span>_'))
           ~f:(fun acc (pos, letter) -&gt;
-            <span data-count="13">S</span>tring.mapi acc ~f:(fun i current_char -&gt;
-              <span data-count="65">i</span>f i = pos then <span data-count="13">l</span>etter else <span data-count="52">c</span>urrent_char
+            <span data-count="9">S</span>tring.mapi acc ~f:(fun i current_char -&gt;
+              <span data-count="45">i</span>f i = pos then <span data-count="9">l</span>etter else <span data-count="36">c</span>urrent_char
             )
           )
       in
-      <span data-count="11">P</span>rintf.print<span data-count="11">f</span> "Hint (positions): %s\n" hint_display
+      <span data-count="4">P</span>rintf.print<span data-count="4">f</span> "Hint (positions): %s\n" hint_display
     );
     (* Display mode 2 hints (letters without position) *)
-    <span data-count="13">i</span>f not (List.is_empt<span data-count="13">y</span> hints.mode2_hints) then <span data-count="4">(</span>
+    <span data-count="7">i</span>f not (List.is_empt<span data-count="7">y</span> hints.mode2_hints) then <span data-count="4">(</span>
       let letters_str = 
         List.ma<span data-count="4">p</span> hints.mode2_hints ~f:Char.to_string 
         |&gt; String.concat ~sep:", "
@@ -422,59 +415,59 @@ let display_cumulative_hints ~word_length hints =
 (** Ask user if they want a hint and provide it, updating cumulative hints *)
 let offer_hint ~answer ~guesses_with_colors ~cumulative_hints =
   (* Display existing cumulative hints first *)
-  <span data-count="13">l</span>et word_length = String.length answer in
-  <span data-count="13">d</span>isplay_cumulative_hints ~word_length cumulative_hints;
+  <span data-count="8">l</span>et word_length = String.length answer in
+  <span data-count="8">d</span>isplay_cumulative_hints ~word_length cumulative_hints;
   
-  <span data-count="13">l</span>et want_hint = Ui.prompt_bool ~default:false "Do you want a hint?" in
-  <span data-count="13">i</span>f want_hint then <span data-count="6">(</span>
+  <span data-count="8">l</span>et want_hint = Ui.prompt_bool ~default:false "Do you want a hint?" in
+  <span data-count="8">i</span>f want_hint then <span data-count="7">(</span>
     let mode = Ui.prompt_hint_mode () in
-    <span data-count="6">m</span>atch mode with
-    | <span data-count="6">1</span> -&gt;
+    <span data-count="7">m</span>atch mode with
+    | <span data-count="4">1</span> -&gt;
         let pos, letter = generate_hint_mode1 ~answer ~guesses_with_colors in
         (* Check if this position is already hinted *)
-        let already_hinted = List.exists cumulative_hints.mode1_hints ~f:(fun (p, _) -&gt; <span data-count="3">p</span> = pos) in
-        <span data-count="6">i</span>f already_hinted then <span data-count="1">(</span>
+        let already_hinted = List.exists cumulative_hints.mode1_hints ~f:(fun (p, _) -&gt; <span data-count="6">p</span> = pos) in
+        <span data-count="4">i</span>f already_hinted then <span data-count="1">(</span>
           Printf.printf "Position %d is already revealed!\n" (pos + 1);
           <span data-count="1">c</span>umulative_hints
-        ) else <span data-count="5">(</span>
+        ) else <span data-count="3">(</span>
           let new_hint = (pos, letter) in
           let updated_hints = {
             cumulative_hints with
             mode1_hints = cumulative_hints.mode1_hints @ [new_hint]
           } in
           let hint_display = 
-            List.fold updated_hints.mode1_hints ~init:(String.ini<span data-count="5">t</span> word_length ~f:(fun _ -&gt; <span data-count="25">'</span>_'))
+            List.fold updated_hints.mode1_hints ~init:(String.ini<span data-count="3">t</span> word_length ~f:(fun _ -&gt; <span data-count="15">'</span>_'))
               ~f:(fun acc (p, l) -&gt;
-                <span data-count="7">S</span>tring.mapi acc ~f:(fun i current_char -&gt;
-                  <span data-count="35">i</span>f i = p then <span data-count="7">l</span> else <span data-count="28">c</span>urrent_char
+                <span data-count="4">S</span>tring.mapi acc ~f:(fun i current_char -&gt;
+                  <span data-count="20">i</span>f i = p then <span data-count="4">l</span> else <span data-count="16">c</span>urrent_char
                 )
               )
           in
-          <span data-count="5">P</span>rintf.printf "Hint: %s\n" hint_display;
-          <span data-count="5">u</span>pdated_hints
+          <span data-count="3">P</span>rintf.printf "Hint: %s\n" hint_display;
+          <span data-count="3">u</span>pdated_hints
         )
-    | <span data-count="0">2</span> -&gt;
+    | <span data-count="3">2</span> -&gt;
         let letter = generate_hint_mode2 ~answer ~guesses_with_colors in
         (* Check if this letter is already hinted *)
         let already_hinted = List.mem cumulative_hints.mode2_hints letter ~equal:Char.equal in
-        <span data-count="0">i</span>f already_hinted then <span data-count="0">(</span>
+        <span data-count="3">i</span>f already_hinted then <span data-count="1">(</span>
           Printf.printf "Letter '%c' is already revealed!\n" letter;
-          <span data-count="0">c</span>umulative_hints
-        ) else <span data-count="0">(</span>
+          <span data-count="1">c</span>umulative_hints
+        ) else <span data-count="2">(</span>
           let updated_hints = {
             cumulative_hints with
             mode2_hints = cumulative_hints.mode2_hints @ [letter]
           } in
           let letters_str = 
-            List.ma<span data-count="0">p</span> updated_hints.mode2_hints ~f:Char.to_string 
+            List.ma<span data-count="2">p</span> updated_hints.mode2_hints ~f:Char.to_string 
             |&gt; String.concat ~sep:", "
           in
-          <span data-count="0">P</span>rintf.printf "Hint: The letters %s are in the answer\n" letters_str;
-          <span data-count="0">u</span>pdated_hints
+          <span data-count="2">P</span>rintf.printf "Hint: The letters %s are in the answer\n" letters_str;
+          <span data-count="2">u</span>pdated_hints
         )
     | <span data-count="0">_</span> -&gt; cumulative_hints
   ) else
-    <span data-count="7">c</span>umulative_hints
+    <span data-count="1">c</span>umulative_hints
 
 </code></pre>
       </div>

@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8"/>
     <title>ui.ml &mdash; Coverage report</title>
-    <meta name="description" content="82.05% coverage in src/lib/ui.ml">
+    <meta name="description" content="93.59% coverage in src/lib/ui.ml">
     <link rel="stylesheet" href="../../coverage.css"/>
     <script src="../../highlight.pack.js"></script>
     <script>hljs.initHighlightingOnLoad();</script>
@@ -15,22 +15,14 @@
           <span class="dirname">src/lib/</span>ui.ml
         </a>
       </h1>
-      <h2>82.05%</h2>
+      <h2>93.59%</h2>
     </div>
     <div id="navbar">
       <span class="unvisited" style="top:10.99%"></span>
-      <span class="unvisited" style="top:18.68%"></span>
-      <span class="unvisited" style="top:20.88%"></span>
       <span class="unvisited" style="top:28.57%"></span>
-      <span class="some-visited" style="top:32.97%"></span>
       <span class="some-visited" style="top:34.07%"></span>
       <span class="unvisited" style="bottom:48.35%"></span>
-      <span class="unvisited" style="bottom:42.86%"></span>
-      <span class="unvisited" style="bottom:41.76%"></span>
-      <span class="unvisited" style="bottom:39.56%"></span>
       <span class="unvisited" style="bottom:26.37%"></span>
-      <span class="some-visited" style="bottom:23.08%"></span>
-      <span class="some-visited" style="bottom:20.88%"></span>
     </div>
     <div id="report">
       <div id="lines-layer">
@@ -51,9 +43,9 @@
 <a id="L14"></a><span > </span>
 <a id="L15"></a><span class="visited"> </span>
 <a id="L16"></a><span class="visited"> </span>
-<a id="L17"></a><span class="unvisited"> </span>
+<a id="L17"></a><span class="visited"> </span>
 <a id="L18"></a><span > </span>
-<a id="L19"></a><span class="unvisited"> </span>
+<a id="L19"></a><span class="visited"> </span>
 <a id="L20"></a><span > </span>
 <a id="L21"></a><span > </span>
 <a id="L22"></a><span class="visited"> </span>
@@ -64,7 +56,7 @@
 <a id="L27"></a><span class="visited"> </span>
 <a id="L28"></a><span class="visited"> </span>
 <a id="L29"></a><span class="visited"> </span>
-<a id="L30"></a><span class="some-visited"> </span>
+<a id="L30"></a><span class="visited"> </span>
 <a id="L31"></a><span class="some-visited"> </span>
 <a id="L32"></a><span class="visited"> </span>
 <a id="L33"></a><span > </span>
@@ -86,10 +78,10 @@
 <a id="L49"></a><span > </span>
 <a id="L50"></a><span class="visited"> </span>
 <a id="L51"></a><span class="visited"> </span>
-<a id="L52"></a><span class="unvisited"> </span>
-<a id="L53"></a><span class="unvisited"> </span>
+<a id="L52"></a><span class="visited"> </span>
+<a id="L53"></a><span class="visited"> </span>
 <a id="L54"></a><span > </span>
-<a id="L55"></a><span class="unvisited"> </span>
+<a id="L55"></a><span class="visited"> </span>
 <a id="L56"></a><span > </span>
 <a id="L57"></a><span > </span>
 <a id="L58"></a><span > </span>
@@ -104,9 +96,9 @@
 <a id="L67"></a><span class="unvisited"> </span>
 <a id="L68"></a><span class="visited"> </span>
 <a id="L69"></a><span > </span>
-<a id="L70"></a><span class="some-visited"> </span>
+<a id="L70"></a><span class="visited"> </span>
 <a id="L71"></a><span class="visited"> </span>
-<a id="L72"></a><span class="some-visited"> </span>
+<a id="L72"></a><span class="visited"> </span>
 <a id="L73"></a><span class="visited"> </span>
 <a id="L74"></a><span > </span>
 <a id="L75"></a><span class="visited"> </span>
@@ -228,31 +220,31 @@ open Core
 
 (** Prompt user for a configuration value *)
 let prompt_int ~default ~min ~max prompt =
-  <span data-count="10">P</span>rintf.printf "%s [default: %d]: " prompt default;
-  <span data-count="10">O</span>ut_channel.flush stdout;
-  <span data-count="10">m</span>atch In_channel.input_line In_channel.stdin with
+  <span data-count="11">P</span>rintf.printf "%s [default: %d]: " prompt default;
+  <span data-count="11">O</span>ut_channel.flush stdout;
+  <span data-count="11">m</span>atch In_channel.input_line In_channel.stdin with
   | <span data-count="0">N</span>one -&gt; default
-  | <span data-count="10">S</span>ome input -&gt;
+  | <span data-count="11">S</span>ome input -&gt;
       let trimmed = String.strip input in
-      <span data-count="10">i</span>f String.is_empty trimmed then <span data-count="8">d</span>efault
+      <span data-count="11">i</span>f String.is_empty trimmed then <span data-count="3">d</span>efault
       else
-        <span data-count="2">m</span>atch Int.of_string trimmed with
-        | <span data-count="2">n</span> when n &gt;= min &amp;&amp; <span data-count="2">n</span> &lt;= max -&gt; <span data-count="2">n</span>
-        | <span data-count="0">_</span> -&gt;
+        <span data-count="8">m</span>atch Int.of_string trimmed with
+        | <span data-count="8">n</span> when n &gt;= min &amp;&amp; <span data-count="8">n</span> &lt;= max -&gt; <span data-count="7">n</span>
+        | <span data-count="1">_</span> -&gt;
             Printf.printf "Invalid input. Using default: %d\n" default;
-            <span data-count="0">d</span>efault
+            <span data-count="1">d</span>efault
 
 let prompt_bool ~default prompt =
-  <span data-count="20">l</span>et rec loop () =
-    <span data-count="21">P</span>rintf.printf "%s [default: %s] (y/n): " prompt (if default then <span data-count="2">"</span>yes" else <span data-count="19">"</span>no");
-    <span data-count="21">O</span>ut_channel.flush stdout;
-    <span data-count="21">m</span>atch In_channel.input_line In_channel.stdin with
+  <span data-count="16">l</span>et rec loop () =
+    <span data-count="17">P</span>rintf.printf "%s [default: %s] (y/n): " prompt (if default then <span data-count="2">"</span>yes" else <span data-count="15">"</span>no");
+    <span data-count="17">O</span>ut_channel.flush stdout;
+    <span data-count="17">m</span>atch In_channel.input_line In_channel.stdin with
     | <span data-count="0">N</span>one -&gt; default
-    | <span data-count="21">S</span>ome input -&gt;
-        let trimmed = String.lowercase (String.stri<span data-count="21">p</span> input) in
-        <span data-count="21">i</span>f String.is_empty trimmed then <span data-count="2">d</span>efault
-        else <span data-count="19">i</span>f String.equa<span data-count="19">l</span> trimmed "y<span data-count="11">"</span> || String.equa<span data-count="8">l</span> trimmed "yes<span data-count="0">"</span> then <span data-count="11">t</span>rue
-        else <span data-count="8">i</span>f String.equa<span data-count="8">l</span> trimmed "n<span data-count="7">"</span> || String.equa<span data-count="1">l</span> trimmed "no<span data-count="0">"</span> then <span data-count="7">f</span>alse
+    | <span data-count="17">S</span>ome input -&gt;
+        let trimmed = String.lowercase (String.stri<span data-count="17">p</span> input) in
+        <span data-count="17">i</span>f String.is_empty trimmed then <span data-count="2">d</span>efault
+        else <span data-count="15">i</span>f String.equa<span data-count="15">l</span> trimmed "y<span data-count="9">"</span> || String.equa<span data-count="6">l</span> trimmed "yes<span data-count="1">"</span> then <span data-count="10">t</span>rue
+        else <span data-count="5">i</span>f String.equa<span data-count="5">l</span> trimmed "n<span data-count="4">"</span> || String.equa<span data-count="1">l</span> trimmed "no<span data-count="0">"</span> then <span data-count="4">f</span>alse
         else <span data-count="1">(</span>
           Printf.printf "invalid input enter y/n\n";
           <span data-count="1">l</span>oop ()
@@ -262,56 +254,56 @@ let prompt_bool ~default prompt =
 
 (** Prompt user for feedback granularity *)
 let prompt_feedback_granularity () =
-  <span data-count="5">P</span>rintf.printf "Feedback mode:\n";
-  <span data-count="5">P</span>rintf.printf "  1. Three-state (Green/Yellow/Grey) - standard Wordle\n";
-  <span data-count="5">P</span>rintf.printf "  2. Binary (Green/Grey only) - harder mode\n";
-  <span data-count="5">P</span>rintf.printf "Choose [default: 1]: ";
-  <span data-count="5">O</span>ut_channel.flush stdout;
-  <span data-count="5">m</span>atch In_channel.input_line In_channel.stdin with
+  <span data-count="7">P</span>rintf.printf "Feedback mode:\n";
+  <span data-count="7">P</span>rintf.printf "  1. Three-state (Green/Yellow/Grey) - standard Wordle\n";
+  <span data-count="7">P</span>rintf.printf "  2. Binary (Green/Grey only) - harder mode\n";
+  <span data-count="7">P</span>rintf.printf "Choose [default: 1]: ";
+  <span data-count="7">O</span>ut_channel.flush stdout;
+  <span data-count="7">m</span>atch In_channel.input_line In_channel.stdin with
   | <span data-count="0">N</span>one -&gt; Config.ThreeState
-  | <span data-count="5">S</span>ome input -&gt;
+  | <span data-count="7">S</span>ome input -&gt;
       let trimmed = String.strip input in
-      <span data-count="5">i</span>f String.is_empty trimmed then <span data-count="3">C</span>onfig.ThreeState
-      else <span data-count="2">i</span>f String.equal trimmed "1" then <span data-count="2">C</span>onfig.ThreeState
-      else <span data-count="0">i</span>f String.equal trimmed "2" then <span data-count="0">C</span>onfig.Binary
-      else <span data-count="0">(</span>
+      <span data-count="7">i</span>f String.is_empty trimmed then <span data-count="2">C</span>onfig.ThreeState
+      else <span data-count="5">i</span>f String.equal trimmed "1" then <span data-count="2">C</span>onfig.ThreeState
+      else <span data-count="3">i</span>f String.equal trimmed "2" then <span data-count="2">C</span>onfig.Binary
+      else <span data-count="1">(</span>
         Printf.printf "Invalid input. Using default: Three-state\n";
-        <span data-count="0">C</span>onfig.ThreeState
+        <span data-count="1">C</span>onfig.ThreeState
       )
 
 (** Prompt user for hint mode selection *)
 let prompt_hint_mode () =
-  <span data-count="6">l</span>et rec loop () =
-    <span data-count="7">P</span>rintf.printf "Hint mode:\n";
-    <span data-count="7">P</span>rintf.printf "  1. Show a correct letter in its correct position\n";
-    <span data-count="7">P</span>rintf.printf "  2. Show a correct letter (without position)\n";
-    <span data-count="7">P</span>rintf.printf "Choose [default: 1]: ";
-    <span data-count="7">O</span>ut_channel.flush stdout;
-    <span data-count="7">m</span>atch In_channel.input_line In_channel.stdin with
+  <span data-count="11">l</span>et rec loop () =
+    <span data-count="13">P</span>rintf.printf "Hint mode:\n";
+    <span data-count="13">P</span>rintf.printf "  1. Show a correct letter in its correct position\n";
+    <span data-count="13">P</span>rintf.printf "  2. Show a correct letter (without position)\n";
+    <span data-count="13">P</span>rintf.printf "Choose [default: 1]: ";
+    <span data-count="13">O</span>ut_channel.flush stdout;
+    <span data-count="13">m</span>atch In_channel.input_line In_channel.stdin with
     | <span data-count="0">N</span>one -&gt; 1
-    | <span data-count="7">S</span>ome input -&gt;
+    | <span data-count="13">S</span>ome input -&gt;
         let trimmed = String.strip input in
-        <span data-count="7">i</span>f String.is_empty trimmed then <span data-count="0">1</span>
-        else <span data-count="7">i</span>f String.equal trimmed "1" then <span data-count="6">1</span>
-        else <span data-count="1">i</span>f String.equal trimmed "2" then <span data-count="0">2</span>
-        else <span data-count="1">(</span>
+        <span data-count="13">i</span>f String.is_empty trimmed then <span data-count="1">1</span>
+        else <span data-count="12">i</span>f String.equal trimmed "1" then <span data-count="5">1</span>
+        else <span data-count="7">i</span>f String.equal trimmed "2" then <span data-count="5">2</span>
+        else <span data-count="2">(</span>
           Printf.printf "Invalid input. Please enter 1 or 2\n";
-          <span data-count="1">l</span>oop ()
+          <span data-count="2">l</span>oop ()
         )
   in
   loop ()
 
 (** Get configuration from user input *)
 let get_config () =
-  <span data-count="5">P</span>rintf.printf "\n=== Wordle Configuration ===\n";
-  <span data-count="5">l</span>et word_length = prompt_int ~default:5 ~min:2 ~max:10 "Word length (2-10)" in
-  <span data-count="5">l</span>et max_guesses = prompt_int ~default:6 ~min:1 ~max:20 "Max guesses" in
+  <span data-count="3">P</span>rintf.printf "\n=== Wordle Configuration ===\n";
+  <span data-count="3">l</span>et word_length = prompt_int ~default:5 ~min:2 ~max:10 "Word length (2-10)" in
+  <span data-count="3">l</span>et max_guesses = prompt_int ~default:6 ~min:1 ~max:20 "Max guesses" in
   (* show_hints is kept for backward compatibility but no longer used (solver runs as competition) *)
-  <span data-count="5">l</span>et show_hints = false in
+  <span data-count="3">l</span>et show_hints = false in
   let feedback_granularity = prompt_feedback_granularity () in
-  <span data-count="5">l</span>et show_position_distances = prompt_bool ~default:false "Show position distances for Yellow letters" in
-  <span data-count="5">P</span>rintf.printf "\n";
-  <span data-count="5">(</span>word_length, max_guesses, show_hints, feedback_granularity, show_position_distances)
+  <span data-count="3">l</span>et show_position_distances = prompt_bool ~default:false "Show position distances for Yellow letters" in
+  <span data-count="3">P</span>rintf.printf "\n";
+  <span data-count="3">(</span>word_length, max_guesses, show_hints, feedback_granularity, show_position_distances)
 
 </code></pre>
       </div>

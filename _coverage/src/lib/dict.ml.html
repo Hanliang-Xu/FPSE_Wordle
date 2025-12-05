@@ -341,11 +341,11 @@ let supported_lengths = [2; 3; 4; 5; 6; 7; 8; 9; 10]
 
 (** Converts a word to lowercase for consistent comparison *)
 let normalize_word word =
-  <span data-count="802698">S</span>tring.lowercase word
+  <span data-count="755180">S</span>tring.lowercase word
 
 (** Returns the number of words in a dictionary *)
 let word_count dictionary =
-  <span data-count="68">L</span>ist.length dictionary
+  <span data-count="58">L</span>ist.length dictionary
 
 (** Filters a list of words to only include those that are exactly n characters long *)
 let filter_by_length words n =
@@ -353,57 +353,57 @@ let filter_by_length words n =
 
 (** Reads words from a file and returns a list of all words found in the file *)
 let load_dictionary filename =
-  <span data-count="99">t</span>ry
+  <span data-count="94">t</span>ry
     let lines = In_channel.read_lines filename in
-    <span data-count="98">l</span>et words =
+    <span data-count="93">l</span>et words =
       List.filter_map lines ~f:(fun line -&gt;
-          <span data-count="30439">l</span>et trimmed = String.strip line in
-          <span data-count="30439">i</span>f String.is_empty trimmed then <span data-count="0">N</span>one
-          else <span data-count="30439">S</span>ome (normalize_wor<span data-count="30439">d</span> trimmed))
+          <span data-count="27384">l</span>et trimmed = String.strip line in
+          <span data-count="27384">i</span>f String.is_empty trimmed then <span data-count="0">N</span>one
+          else <span data-count="27384">S</span>ome (normalize_wor<span data-count="27384">d</span> trimmed))
     in
-    <span data-count="98">w</span>ords
+    <span data-count="93">w</span>ords
   with
   | <span data-count="1">S</span>ys_error msg -&gt; raise (Sys_error msg)
 
 (** Checks if a word exists in a dictionary (case-insensitive) *)
 let is_valid_word word dictionary =
-  <span data-count="16">l</span>et normalized = normalize_word word in
-  <span data-count="16">L</span>ist.mem dictionary normalized ~equal:String.equal
+  <span data-count="17">l</span>et normalized = normalize_word word in
+  <span data-count="17">L</span>ist.mem dictionary normalized ~equal:String.equal
 
 (** Returns a random word from a dictionary *)
 let get_random_word dictionary =
-  <span data-count="58">i</span>f List.is_empty dictionary then
+  <span data-count="53">i</span>f List.is_empty dictionary then
     <span data-count="1">r</span>aise (Invalid_argument "Cannot get random word from empty dictionary")
   else
-    <span data-count="57">l</span>et len = List.length dictionary in
-    <span data-count="57">l</span>et index = Random.int len in
-    <span data-count="57">L</span>ist.nth_exn dictionary index
+    <span data-count="52">l</span>et len = List.length dictionary in
+    <span data-count="52">l</span>et index = Random.int len in
+    <span data-count="52">L</span>ist.nth_exn dictionary index
 
 (** Checks if a word is valid by calling Datamuse API *)
 let is_valid_word_api word =
-  <span data-count="28">l</span>et normalized = normalize_word word in
-  <span data-count="28">t</span>ry
+  <span data-count="11">l</span>et normalized = normalize_word word in
+  <span data-count="11">t</span>ry
     (* Use Datamuse API to validate word - query with exact spelling match *)
     let api_url = Printf.sprintf "https://api.datamuse.com/words?sp=%s&amp;max=1" normalized in
-    <span data-count="28">l</span>et command = Printf.sprintf "curl -s \"%s\"" api_url in
-    <span data-count="28">l</span>et ic = Core_unix.open_process_in command in
-    <span data-count="28">l</span>et response = In_channel.input_all ic in
-    <span data-count="28">l</span>et exit_status = Core_unix.close_process_in ic in
+    <span data-count="11">l</span>et command = Printf.sprintf "curl -s \"%s\"" api_url in
+    <span data-count="11">l</span>et ic = Core_unix.open_process_in command in
+    <span data-count="11">l</span>et response = In_channel.input_all ic in
+    <span data-count="11">l</span>et exit_status = Core_unix.close_process_in ic in
     
     (* Wait for process to complete and check exit status *)
-    <span data-count="28">m</span>atch exit_status with
-    | <span data-count="28">O</span>k () -&gt;
+    <span data-count="11">m</span>atch exit_status with
+    | <span data-count="11">O</span>k () -&gt;
         (* Check if response contains the word - Datamuse returns JSON array *)
-        if String.is_empt<span data-count="28">y</span> respons<span data-count="0">e</span> || not (String.is_prefi<span data-count="28">x</span> response ~prefix:"["<span data-count="0">)</span> then
+        if String.is_empt<span data-count="11">y</span> respons<span data-count="0">e</span> || not (String.is_prefi<span data-count="11">x</span> response ~prefix:"["<span data-count="0">)</span> then
           <span data-count="0">f</span>alse
-        else <span data-count="28">i</span>f String.equal response "[]" then
+        else <span data-count="11">i</span>f String.equal response "[]" then
           (* Empty array means word not found *)
           <span data-count="2">f</span>alse
         else
           (* Check if the word appears in the response *)
           (* Datamuse returns: [{"word":"word","score":...}] if found *)
-          <span data-count="26">l</span>et word_pattern = Printf.sprintf "\"word\":\"%s\"" normalized in
-          <span data-count="26">S</span>tring.is_substrin<span data-count="26">g</span> response ~substring:word_pattern
+          <span data-count="9">l</span>et word_pattern = Printf.sprintf "\"word\":\"%s\"" normalized in
+          <span data-count="9">S</span>tring.is_substrin<span data-count="9">g</span> response ~substring:word_pattern
     | <span data-count="0">E</span>rror _ -&gt; false  (* Process failed *)
   with
   | <span data-count="0">_</span> -&gt; false  (* On any error, return false *)
@@ -412,29 +412,29 @@ let is_valid_word_api word =
     Random Word API supports length parameter to get words of a specific length
     Returns all words matching the length in a single request (no API key needed) *)
 let fetch_words_from_random_word_api ~word_length =
-  <span data-count="97">t</span>ry
+  <span data-count="92">t</span>ry
     (* Random Word API: use length parameter and request a large number of words *)
     (* Request 10000 words to get comprehensive coverage *)
     let api_url = Printf.sprintf "https://random-word-api.herokuapp.com/word?length=%d&amp;number=10000" word_length in
-    <span data-count="97">l</span>et command = Printf.sprintf "curl -s \"%s\"" api_url in
-    <span data-count="97">l</span>et ic = Core_unix.open_process_in command in
-    <span data-count="97">l</span>et response = In_channel.input_all ic in
-    <span data-count="97">i</span>gnore (Core_unix.close_process_i<span data-count="97">n</span> ic);
+    <span data-count="92">l</span>et command = Printf.sprintf "curl -s \"%s\"" api_url in
+    <span data-count="92">l</span>et ic = Core_unix.open_process_in command in
+    <span data-count="92">l</span>et response = In_channel.input_all ic in
+    <span data-count="92">i</span>gnore (Core_unix.close_process_i<span data-count="92">n</span> ic);
     
     (* Parse JSON response using yojson - returns simple array: ["word1", "word2", ...] *)
     if String.is_empty response then
       <span data-count="0">[</span>]
     else
-      <span data-count="97">t</span>ry
+      <span data-count="92">t</span>ry
         let json = Yojson.Safe.from_string response in
         (* Random Word API returns a simple JSON array of strings *)
-        <span data-count="97">l</span>et words = 
+        <span data-count="92">l</span>et words = 
           json
-          |&gt; Yojson.Safe.Util.to_lis<span data-count="97">t</span> 
-          |&gt; List.ma<span data-count="97">p</span> ~f:Yojson.Safe.Util.to_string
+          |&gt; Yojson.Safe.Util.to_lis<span data-count="92">t</span> 
+          |&gt; List.ma<span data-count="92">p</span> ~f:Yojson.Safe.Util.to_string
           |&gt; List.map ~f:normalize_word
         in
-        <span data-count="97">L</span>ist.dedup_and_sor<span data-count="97">t</span> words ~compare:String.compare
+        <span data-count="92">L</span>ist.dedup_and_sor<span data-count="92">t</span> words ~compare:String.compare
       with
       | <span data-count="0">Y</span>ojson.Safe.Util.Type_error (msg, _) -&gt;
           Printf.eprintf "JSON parsing error: %s\n" msg;
@@ -450,32 +450,32 @@ let fetch_words_from_random_word_api ~word_length =
 (** Fetches words from Random Word API - single API call for all words
     No API key required - no fallback to local files *)
 let fetch_words_from_api ~word_length =
-  <span data-count="97">f</span>etch_words_from_random_word_api ~word_length
+  <span data-count="92">f</span>etch_words_from_random_word_api ~word_length
 
 (** Loads words from Random Word API only - no fallback to local files
     No API key required - returns empty list if API fails *)
 let load_words_from_api ~word_length =
-  <span data-count="111">i</span>f word_length &lt; <span data-count="9">2</span> || word_length &gt; 1<span data-count="5">0</span> then
+  <span data-count="106">i</span>f word_length &lt; <span data-count="9">2</span> || word_length &gt; 1<span data-count="5">0</span> then
     <span data-count="14">r</span>aise (Invalid_argument (Printf.sprint<span data-count="14">f</span> "Word length %d not supported. Must be between 2 and 10." word_length))
   else
     (* Fetch words from Random Word API only - no local file fallback *)
-    <span data-count="97">f</span>etch_words_from_api ~word_length
+    <span data-count="92">f</span>etch_words_from_api ~word_length
 
 (** Loads answers from local files
     Answers are always loaded from local files, not from API *)
 let load_answers_from_file ~word_length =
-  <span data-count="96">i</span>f word_length &lt; <span data-count="0">2</span> || word_length &gt; 1<span data-count="0">0</span> then
+  <span data-count="91">i</span>f word_length &lt; <span data-count="0">2</span> || word_length &gt; 1<span data-count="0">0</span> then
     <span data-count="0">r</span>aise (Invalid_argument (Printf.sprint<span data-count="0">f</span> "Word length %d not supported. Must be between 2 and 10." word_length))
   else
-    <span data-count="96">l</span>et answers_file = Printf.sprintf "data/%dletter/answers.txt" word_length in
-    <span data-count="96">l</span>oad_dictionary answers_file
+    <span data-count="91">l</span>et answers_file = Printf.sprintf "data/%dletter/answers.txt" word_length in
+    <span data-count="91">l</span>oad_dictionary answers_file
 
 (** Loads words from Random Word API (for guesses) and answers from local files
     Returns (words, answers) tuple where:
     - words: loaded from Random Word API only (for solver guesses and user guesses) - no local file fallback
     - answers: loaded from local files (for game answers) *)
 let load_dictionary_by_length_api n =
-  <span data-count="107">l</span>et words = load_words_from_api ~word_length:n in
+  <span data-count="102">l</span>et words = load_words_from_api ~word_length:n in
   let answers = load_answers_from_file ~word_length:n in
   (words, answers)
 </code></pre>

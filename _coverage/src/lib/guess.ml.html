@@ -349,18 +349,18 @@ open Config
 
 (* Helper functions defined outside functor for better coverage tracking *)
 let color_to_string_impl = function
-  | <span data-count="91">F</span>eedback.Green -&gt; "G"
-  | <span data-count="52">F</span>eedback.Yellow -&gt; "Y"
-  | <span data-count="101">F</span>eedback.Grey -&gt; "."
+  | <span data-count="38">F</span>eedback.Green -&gt; "G"
+  | <span data-count="28">F</span>eedback.Yellow -&gt; "Y"
+  | <span data-count="18">F</span>eedback.Grey -&gt; "."
 
 let colors_to_string_impl colors =
-  <span data-count="52">L</span>ist.ma<span data-count="52">p</span> colors ~f:color_to_string_impl |&gt; String.concat ~sep:""
+  <span data-count="20">L</span>ist.ma<span data-count="20">p</span> colors ~f:color_to_string_impl |&gt; String.concat ~sep:""
 
 let to_string_impl { Feedback.guess; colors; _ } =
   <span data-count="1">P</span>rintf.sprintf "%s: %s" guess (colors_to_string_imp<span data-count="1">l</span> colors)
 
 let is_correct_impl { Feedback.colors; _ } =
-  <span data-count="75">L</span>ist.for_all colors ~f:(function <span data-count="106">F</span>eedback.Green -&gt; true | <span data-count="57">_</span> -&gt; false)
+  <span data-count="19">L</span>ist.for_all colors ~f:(function <span data-count="38">F</span>eedback.Green -&gt; true | <span data-count="11">_</span> -&gt; false)
 
 module type S = sig
   include module type of Feedback
@@ -377,89 +377,89 @@ module Make (C : Config) : S = struct
   include Feedback
   
   let generate guess answer =
-    <span data-count="138">m</span>atch C.feedback_granularity with
-    | <span data-count="16">C</span>onfig.Binary -&gt;
+    <span data-count="99">m</span>atch C.feedback_granularity with
+    | <span data-count="14">C</span>onfig.Binary -&gt;
         (* Binary mode: simple position-by-position check *)
         let guess_chars = String.to_list guess in
-        <span data-count="16">l</span>et answer_chars = String.to_list answer in
-        <span data-count="16">L</span>ist.map2_exn guess_chars answer_chars ~f:(fun g a -&gt;
-          <span data-count="82">i</span>f Char.equal g a then <span data-count="28">G</span>reen else <span data-count="54">G</span>rey)
-    | <span data-count="122">C</span>onfig.ThreeState -&gt;
+        <span data-count="14">l</span>et answer_chars = String.to_list answer in
+        <span data-count="14">L</span>ist.map2_exn guess_chars answer_chars ~f:(fun g a -&gt;
+          <span data-count="72">i</span>f Char.equal g a then <span data-count="21">G</span>reen else <span data-count="51">G</span>rey)
+    | <span data-count="85">C</span>onfig.ThreeState -&gt;
         (* Three-state mode: standard Wordle algorithm with Green/Yellow/Grey *)
         let guess_chars = String.to_list guess in
-        <span data-count="122">l</span>et answer_chars = String.to_list answer in
+        <span data-count="85">l</span>et answer_chars = String.to_list answer in
         (* First pass: mark exact matches as Green *)
-        <span data-count="122">l</span>et exact_matches =
+        <span data-count="85">l</span>et exact_matches =
           List.map2_exn guess_chars answer_chars ~f:(fun g a -&gt;
-            <span data-count="595">i</span>f Char.equal g a then <span data-count="233">S</span>ome Green else <span data-count="362">N</span>one)
+            <span data-count="410">i</span>f Char.equal g a then <span data-count="141">S</span>ome Green else <span data-count="269">N</span>one)
         in
         (* Count remaining letters in answer (excluding exact matches) *)
-        <span data-count="122">l</span>et remaining_counts =
-          List.fold2_ex<span data-count="122">n</span> answer_chars exact_matches ~init:[] ~f:(fun acc a_char match_opt -&gt;
-            <span data-count="595">m</span>atch match_opt with
-            | <span data-count="233">S</span>ome Green -&gt; acc
-            | <span data-count="362">_</span> -&gt; a_char :: acc)
-          |&gt; List.fold ~init:(Map.empt<span data-count="122">y</span> (module Char)) ~f:(fun acc c -&gt;
-            <span data-count="362">M</span>ap.update acc c ~f:(function
-              | <span data-count="344">N</span>one -&gt; 1
-              | <span data-count="18">S</span>ome count -&gt; count + 1))
+        <span data-count="85">l</span>et remaining_counts =
+          List.fold2_ex<span data-count="85">n</span> answer_chars exact_matches ~init:[] ~f:(fun acc a_char match_opt -&gt;
+            <span data-count="410">m</span>atch match_opt with
+            | <span data-count="141">S</span>ome Green -&gt; acc
+            | <span data-count="269">_</span> -&gt; a_char :: acc)
+          |&gt; List.fold ~init:(Map.empt<span data-count="85">y</span> (module Char)) ~f:(fun acc c -&gt;
+            <span data-count="269">M</span>ap.update acc c ~f:(function
+              | <span data-count="254">N</span>one -&gt; 1
+              | <span data-count="15">S</span>ome count -&gt; count + 1))
         in
         (* Second pass: determine Yellow vs Grey for non-exact matches *)
-        <span data-count="122">l</span>et _, colors =
+        <span data-count="85">l</span>et _, colors =
           List.fold2_exn guess_chars exact_matches ~init:(remaining_counts, [])
             ~f:(fun (counts, acc) g_char match_opt -&gt;
-              <span data-count="595">m</span>atch match_opt with
-              | <span data-count="233">S</span>ome Green -&gt; (counts, Green :: acc)
-              | <span data-count="362">_</span> -&gt;
-                let count = Map.fin<span data-count="362">d</span> counts g_char |&gt; Option.value ~default:0 in
-                <span data-count="362">i</span>f count &gt; 0 then
-                  <span data-count="143">l</span>et new_counts = Map.set counts ~key:g_char ~data:(count - 1) in
-                  <span data-count="143">(</span>new_counts, Yellow :: acc)
+              <span data-count="410">m</span>atch match_opt with
+              | <span data-count="141">S</span>ome Green -&gt; (counts, Green :: acc)
+              | <span data-count="269">_</span> -&gt;
+                let count = Map.fin<span data-count="269">d</span> counts g_char |&gt; Option.value ~default:0 in
+                <span data-count="269">i</span>f count &gt; 0 then
+                  <span data-count="120">l</span>et new_counts = Map.set counts ~key:g_char ~data:(count - 1) in
+                  <span data-count="120">(</span>new_counts, Yellow :: acc)
                 else
-                  <span data-count="219">(</span>counts, Grey :: acc))
+                  <span data-count="149">(</span>counts, Grey :: acc))
         in
-        <span data-count="122">L</span>ist.rev colors
+        <span data-count="85">L</span>ist.rev colors
 
   (* Calculate distances for Yellow letters *)
   let calculate_distances guess answer colors =
-    <span data-count="107">i</span>f not C.show_position_distances then <span data-count="65">N</span>one
+    <span data-count="68">i</span>f not C.show_position_distances then <span data-count="54">N</span>one
     else
-      <span data-count="42">l</span>et guess_chars = String.to_list guess in
-      <span data-count="42">l</span>et answer_chars = String.to_list answer in
+      <span data-count="14">l</span>et guess_chars = String.to_list guess in
+      <span data-count="14">l</span>et answer_chars = String.to_list answer in
       (* Build a map of answer positions available for each letter (excluding Green matches) *)
-      <span data-count="42">l</span>et available_positions =
-        List.map<span data-count="42">i</span> answer_chars ~f:(fun i a_char -&gt;
-          <span data-count="210">l</span>et color = List.nth_exn colors i in
-          <span data-count="210">m</span>atch color with
-          | <span data-count="87">G</span>reen -&gt; None  (* Position already matched *)
-          | <span data-count="123">_</span> -&gt; Some (i, a_char))
-        |&gt; List.filter_ma<span data-count="42">p</span> ~f:Fn.id
-        |&gt; List.fold ~init:(Map.empt<span data-count="42">y</span> (module Char)) ~f:(fun acc (pos, char) -&gt;
-            <span data-count="123">M</span>ap.update acc char ~f:(function
-              | <span data-count="120">N</span>one -&gt; [pos]
-              | <span data-count="3">S</span>ome positions -&gt; pos :: positions))
+      <span data-count="14">l</span>et available_positions =
+        List.map<span data-count="14">i</span> answer_chars ~f:(fun i a_char -&gt;
+          <span data-count="70">l</span>et color = List.nth_exn colors i in
+          <span data-count="70">m</span>atch color with
+          | <span data-count="28">G</span>reen -&gt; None  (* Position already matched *)
+          | <span data-count="42">_</span> -&gt; Some (i, a_char))
+        |&gt; List.filter_ma<span data-count="14">p</span> ~f:Fn.id
+        |&gt; List.fold ~init:(Map.empt<span data-count="14">y</span> (module Char)) ~f:(fun acc (pos, char) -&gt;
+            <span data-count="42">M</span>ap.update acc char ~f:(function
+              | <span data-count="41">N</span>one -&gt; [pos]
+              | <span data-count="1">S</span>ome positions -&gt; pos :: positions))
       in
       (* Calculate distance for each position, tracking used positions *)
-      <span data-count="42">l</span>et _, distances = List.foldi guess_chars ~init:(available_positions, []) ~f:(fun guess_pos (avail, acc) g_char -&gt;
-        <span data-count="210">l</span>et color = List.nth_exn colors guess_pos in
-        <span data-count="210">m</span>atch color with
-        | <span data-count="87">G</span>reen -&gt; (avail, None :: acc)  (* Already correct, no distance *)
-        | <span data-count="70">G</span>rey -&gt; (avail, None :: acc)   (* Not in word, no distance *)
-        | <span data-count="53">Y</span>ellow -&gt;
+      <span data-count="14">l</span>et _, distances = List.foldi guess_chars ~init:(available_positions, []) ~f:(fun guess_pos (avail, acc) g_char -&gt;
+        <span data-count="70">l</span>et color = List.nth_exn colors guess_pos in
+        <span data-count="70">m</span>atch color with
+        | <span data-count="28">G</span>reen -&gt; (avail, None :: acc)  (* Already correct, no distance *)
+        | <span data-count="7">G</span>rey -&gt; (avail, None :: acc)   (* Not in word, no distance *)
+        | <span data-count="35">Y</span>ellow -&gt;
             (* Find the nearest available position for this letter in the answer *)
             (match Map.find avail g_char with
-            | <span data-count="53">S</span>ome positions -&gt;
+            | <span data-count="35">S</span>ome positions -&gt;
                 (* Find the closest position to guess_pos *)
                 (match List.min_elt positions ~compare:(fun p1 p2 -&gt;
                   <span data-count="1">l</span>et dist1 = abs (p1 - guess_pos) in
                   <span data-count="1">l</span>et dist2 = abs (p2 - guess_pos) in
                   <span data-count="1">I</span>nt.compare dist1 dist2) with
-                | <span data-count="53">S</span>ome answer_pos -&gt;
+                | <span data-count="35">S</span>ome answer_pos -&gt;
                     let distance = answer_pos - guess_pos in
                     (* Remove this position from available for future matches *)
-                    let updated_positions = List.filter positions ~f:(fun p -&gt; <span data-count="54">p</span> &lt;&gt; answer_pos) in
-                    <span data-count="53">l</span>et updated_avail = if List.is_empty updated_positions then
-                        <span data-count="52">M</span>ap.remov<span data-count="52">e</span> avail g_char
+                    let updated_positions = List.filter positions ~f:(fun p -&gt; <span data-count="36">p</span> &lt;&gt; answer_pos) in
+                    <span data-count="35">l</span>et updated_avail = if List.is_empty updated_positions then
+                        <span data-count="34">M</span>ap.remov<span data-count="34">e</span> avail g_char
                       else
                         <span data-count="1">M</span>ap.se<span data-count="1">t</span> avail ~key:g_char ~data:updated_positions
                     in
@@ -467,35 +467,35 @@ module Make (C : Config) : S = struct
                 | <span data-count="0">N</span>one -&gt; (avail, None :: acc))
             | <span data-count="0">N</span>one -&gt; (avail, None :: acc)))
       in
-      <span data-count="42">S</span>ome (List.re<span data-count="42">v</span> distances)
+      <span data-count="14">S</span>ome (List.re<span data-count="14">v</span> distances)
 
   let make_feedback guess answer =
-    <span data-count="107">l</span>et colors = generate guess answer in
-    <span data-count="107">l</span>et distances = calculate_distances guess answer colors in
-    <span data-count="107">{</span> guess; colors; distances }
+    <span data-count="68">l</span>et colors = generate guess answer in
+    <span data-count="68">l</span>et distances = calculate_distances guess answer colors in
+    <span data-count="68">{</span> guess; colors; distances }
 
   let is_correct = is_correct_impl
   let color_to_string = color_to_string_impl
   let colors_to_string = colors_to_string_impl
 
   let to_string { guess; colors; distances } =
-    <span data-count="44">l</span>et base = Printf.sprintf "%s: %s" guess (colors_to_strin<span data-count="44">g</span> colors) in
-    <span data-count="44">m</span>atch distances with
+    <span data-count="12">l</span>et base = Printf.sprintf "%s: %s" guess (colors_to_strin<span data-count="12">g</span> colors) in
+    <span data-count="12">m</span>atch distances with
     | <span data-count="4">N</span>one -&gt; base
-    | <span data-count="40">S</span>ome dist_list -&gt;
+    | <span data-count="8">S</span>ome dist_list -&gt;
         (* Build distance string showing distance for each Yellow letter position *)
-        let dist_str = List.map<span data-count="40">i</span> colors ~f:(fun i color -&gt;
-          <span data-count="200">m</span>atch (color, List.nth_ex<span data-count="200">n</span> dist_list i) with
-          | <span data-count="45">Y</span>ellow, Some d when d &gt; 0 -&gt; <span data-count="26">P</span>rintf.sprintf "pos%d:+%d" i d
-          | <span data-count="19">Y</span>ellow, Some d when d &lt; 0 -&gt; <span data-count="19">P</span>rintf.sprintf "pos%d:%d" i d
+        let dist_str = List.map<span data-count="8">i</span> colors ~f:(fun i color -&gt;
+          <span data-count="40">m</span>atch (color, List.nth_ex<span data-count="40">n</span> dist_list i) with
+          | <span data-count="21">Y</span>ellow, Some d when d &gt; 0 -&gt; <span data-count="6">P</span>rintf.sprintf "pos%d:+%d" i d
+          | <span data-count="15">Y</span>ellow, Some d when d &lt; 0 -&gt; <span data-count="15">P</span>rintf.sprintf "pos%d:%d" i d
           | <span data-count="0">Y</span>ellow, Some 0 -&gt; Printf.sprintf "pos%d:0" i
-          | <span data-count="155">_</span> -&gt; ""
+          | <span data-count="19">_</span> -&gt; ""
         )
-        |&gt; List.filte<span data-count="40">r</span> ~f:(fun s -&gt; <span data-count="200">n</span>ot (String.is_empt<span data-count="200">y</span> s))
+        |&gt; List.filte<span data-count="8">r</span> ~f:(fun s -&gt; <span data-count="40">n</span>ot (String.is_empt<span data-count="40">y</span> s))
         |&gt; String.concat ~sep:", "
         in
-        <span data-count="40">i</span>f String.is_empty dist_str then <span data-count="15">b</span>ase
-        else <span data-count="25">P</span>rintf.sprintf "%s [%s]" base dist_str
+        <span data-count="8">i</span>f String.is_empty dist_str then <span data-count="2">b</span>ase
+        else <span data-count="6">P</span>rintf.sprintf "%s [%s]" base dist_str
 end
 
 </code></pre>

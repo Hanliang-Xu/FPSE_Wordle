@@ -65,11 +65,11 @@ open Config
 
 module Make (C : Config) = struct
   let validate_length s =
-    <span data-count="83">S</span>tring.lengt<span data-count="83">h</span> s = C.word_length
+    <span data-count="67">S</span>tring.lengt<span data-count="67">h</span> s = C.word_length
 
   let validate_guess s =
-    <span data-count="31">i</span>f validate_length s then
-      <span data-count="26">O</span>k s
+    <span data-count="14">i</span>f validate_length s then
+      <span data-count="9">O</span>k s
     else
       <span data-count="5">E</span>rror (Printf.sprint<span data-count="5">f</span> "Invalid word length: expected %d, got %d" 
                C.word_length (String.lengt<span data-count="5">h</span> s))
