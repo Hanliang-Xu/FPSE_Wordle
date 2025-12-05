@@ -108,3 +108,23 @@
   (deps (glob_files_rec ../data/**))
   (action (chdir %{workspace_root} (run %{test})))
   (preprocess (pps ppx_jane)))
+
+(test
+  (name hints_tests)
+  (modules hints_tests)
+  (libraries
+    core
+    ounit2
+    lib
+  )
+  (preprocess (pps ppx_jane)))
+
+(test
+  (name ui_tests)
+  (modules ui_tests)
+  (libraries
+    core
+    ounit2
+    lib
+  )
+  (preprocess (pps ppx_jane)))

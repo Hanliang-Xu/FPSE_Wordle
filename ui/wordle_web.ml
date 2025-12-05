@@ -56,6 +56,7 @@ module type ActiveGame_S = sig
   val config : game_config
   val cumulative_hints : cumulative_hints ref
   val word_list : string list
+  val answer : string
 end
 
 (* The global mutable reference to the current active game *)
@@ -92,6 +93,7 @@ let start_game (cfg : game_config) =
     let config = cfg
     let cumulative_hints = ref empty_hints
     let word_list = words
+    let answer = answer
   end in
   
   current_game := Some (module Active)
@@ -245,24 +247,46 @@ let guess_handler request =
             let is_won = Active.W.Game.is_won new_game_state in
             let is_over = Active.W.Game.is_over new_game_state in
             let remaining = Active.W.Game.remaining_guesses new_game_state in
-            let candidate_count = Active.W.Solver.candidate_count new_solver_state in
-            
-            let hint_json = 
-              if Active.config.show_hints && not is_won && not is_over then
-                let hint_guess = Active.W.Solver.make_guess new_solver_state in
-                sprintf ",\"solverHint\":\"%s\",\"candidates\":%d" hint_guess candidate_count
-              else ""
-            in
             
             let answer_json = 
               if is_over && not is_won then
-                sprintf ",\"answer\":\"%s\"" (Active.W.Game.answer new_game_state)
+                sprintf ",\"answer\":\"%s\"" Active.answer
               else ""
+            in
+            
+            (* If game is over, run solver and add comparison *)
+            let comparison_json =
+              if is_over then (
+                (* Run solver to completion *)
+                let solver_game = Active.W.Game.init 
+                  ~answer:Active.answer
+                  ~max_guesses:Active.config.max_guesses in
+                let solver_state = Active.W.Solver.create Active.word_list in
+                let rec solver_loop game_state solver_state =
+                  if Active.W.Game.is_over game_state then
+                    (Active.W.Game.is_won game_state, Active.W.Game.num_guesses game_state)
+                  else (
+                    let guess = Active.W.Solver.make_guess solver_state in
+                    let new_game_state = Active.W.Game.step game_state guess in
+                    let feedback =
+                      match Active.W.Game.last_feedback new_game_state with
+                      | Some fb -> fb
+                      | None -> failwith "Unexpected: no feedback after step"
+                    in
+                    let new_solver_state = Active.W.Solver.update solver_state feedback in
+                    solver_loop new_game_state new_solver_state
+                  )
+                in
+                let solver_won, solver_guesses = solver_loop solver_game solver_state in
+                let human_guesses = Active.W.Game.num_guesses new_game_state in
+                sprintf ",\"comparison\":{\"humanWon\":%b,\"humanGuesses\":%d,\"botWon\":%b,\"botGuesses\":%d}"
+                  is_won human_guesses solver_won solver_guesses
+              ) else ""
             in
             
             let response = sprintf 
               "{\"status\":\"success\",\"feedback\":%s,\"isWon\":%b,\"isOver\":%b,\"remaining\":%d%s%s}"
-              (feedback_to_json feedback) is_won is_over remaining hint_json answer_json
+              (feedback_to_json feedback) is_won is_over remaining answer_json comparison_json
             in
             Dream.json response
           )

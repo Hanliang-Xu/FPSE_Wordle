@@ -82,7 +82,8 @@ let get_config () =
   Printf.printf "\n=== Wordle Configuration ===\n";
   let word_length = prompt_int ~default:5 ~min:2 ~max:10 "Word length (2-10)" in
   let max_guesses = prompt_int ~default:6 ~min:1 ~max:20 "Max guesses" in
-  let show_hints = prompt_bool ~default:true "Show hints (solver's guess)" in
+  (* show_hints is kept for backward compatibility but no longer used (solver runs as competition) *)
+  let show_hints = false in
   let feedback_granularity = prompt_feedback_granularity () in
   let show_position_distances = prompt_bool ~default:false "Show position distances for Yellow letters" in
   Printf.printf "\n";

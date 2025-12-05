@@ -140,6 +140,43 @@ let test_solver_3letter _ =
   let guess = Solver3.make_guess solver in
   assert_equal "cat" guess ~printer:Fn.id
 
+(** Test with distance hints enabled *)
+module Config5WithDistances = struct
+  let word_length = 5
+  let feedback_granularity = Lib.Config.ThreeState
+  let show_position_distances = true
+end
+
+module Guess5WithDistances = Lib.Guess.Make (Config5WithDistances)
+module Solver5WithDistances = Lib.Solver.Make (Guess5WithDistances)
+
+let test_solver_respects_distance_hints _ =
+  (* Test that solver filters candidates based on distance hints *)
+  (* Example: "CRANE" vs "TRACE" 
+     - C at pos 0: Yellow, should be at pos 3 (distance +3)
+     - R at pos 1: Green
+     - A at pos 2: Green  
+     - N at pos 3: Grey (N not in TRACE)
+     - E at pos 4: Green *)
+  let word_list = ["trace"; "crane"; "place"; "grace"; "brace"] in
+  let solver = Solver5WithDistances.create word_list in
+  (* Create feedback: "CRANE" vs "TRACE" *)
+  let feedback = Guess5WithDistances.make_feedback "crane" "trace" in
+  (* Verify feedback has distances *)
+  assert_bool "Feedback should have distances" (Option.is_some feedback.distances);
+  (* Update solver *)
+  let updated_solver = Solver5WithDistances.update solver feedback in
+  let remaining = Solver5WithDistances.candidate_count updated_solver in
+  (* "trace" should remain (matches all constraints including distance hints) *)
+  (* "crane" should be filtered out (N is not in TRACE) *)
+  (* Other words may or may not match depending on their letters *)
+  let candidates = Solver5WithDistances.get_candidates updated_solver in
+  assert_bool "trace should be in remaining candidates" 
+    (List.mem candidates "trace" ~equal:String.equal);
+  assert_bool "crane should be filtered out" 
+    (not (List.mem candidates "crane" ~equal:String.equal));
+  assert_bool "Should have at least one candidate" (remaining > 0)
+
 (** Test with binary mode *)
 module Config5Binary = struct
   let word_length = 5
@@ -180,6 +217,7 @@ let suite =
     "update_with_partial_feedback" >:: test_update_with_partial_feedback;
     "update_multiple_times" >:: test_update_multiple_times;
     "solver_3letter" >:: test_solver_3letter;
+    "solver_respects_distance_hints" >:: test_solver_respects_distance_hints;
     "solver_binary_mode" >:: test_solver_binary_mode;
   ]
 

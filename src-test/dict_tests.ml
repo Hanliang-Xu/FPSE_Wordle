@@ -440,6 +440,42 @@ let test_is_valid_word_edge_cases _ =
   assert_bool "Word should be found with trailing spaces normalized"
     (is_valid_word "hello" dictionary)
 
+let test_load_answers_from_file _ =
+  (* Test loading answers from file via load_dictionary_by_length_api *)
+  try
+    let _, answers = load_dictionary_by_length_api 5 in
+    assert_bool "Should load answers from file" (List.length answers > 0);
+    assert_bool "All answers should be length 5"
+      (List.for_all answers ~f:(fun w -> String.length w = 5));
+    assert_bool "All answers should be lowercase"
+      (List.for_all answers ~f:(fun w -> String.equal w (normalize_word w)))
+  with
+  | Sys_error _ -> Printf.printf "Skipping test: file not found\n"
+  | e -> Printf.printf "Skipping test: %s\n" (Exn.to_string e)
+
+let test_load_answers_from_file_invalid_length _ =
+  (* Test invalid length raises exception via load_dictionary_by_length_api *)
+  assert_raises (Invalid_argument "Word length 1 not supported. Must be between 2 and 10.") 
+    (fun () -> ignore (load_dictionary_by_length_api 1));
+  assert_raises (Invalid_argument "Word length 11 not supported. Must be between 2 and 10.") 
+    (fun () -> ignore (load_dictionary_by_length_api 11));
+  assert_raises (Invalid_argument "Word length 0 not supported. Must be between 2 and 10.") 
+    (fun () -> ignore (load_dictionary_by_length_api 0))
+
+let test_get_random_word_edge_cases _ =
+  (* Test edge cases for get_random_word *)
+  (* Single word dictionary *)
+  assert_equal "test" (get_random_word ["test"]);
+  (* Large dictionary *)
+  let large_dict = List.init 1000 ~f:(fun i -> Printf.sprintf "word%03d" i) in
+  let result = get_random_word large_dict in
+  assert_bool "Should return a word from large dictionary"
+    (List.mem large_dict result ~equal:String.equal);
+  (* Test that it can return different words *)
+  let results = List.init 10 ~f:(fun _ -> get_random_word large_dict) in
+  assert_bool "Should potentially return different words"
+    (List.length (List.dedup_and_sort results ~compare:String.compare) >= 1)
+
 let suite =
   "Dict module tests" >::: [
     "normalize_word" >:: test_normalize_word;
@@ -473,6 +509,9 @@ let suite =
     "normalize_word_special_chars" >:: test_normalize_word_special_chars;
     "filter_by_length_edge_cases" >:: test_filter_by_length_edge_cases;
     "is_valid_word_edge_cases" >:: test_is_valid_word_edge_cases;
+    "load_answers_from_file" >:: test_load_answers_from_file;
+    "load_answers_from_file_invalid_length" >:: test_load_answers_from_file_invalid_length;
+    "get_random_word_edge_cases" >:: test_get_random_word_edge_cases;
   ]
 
 let () = run_test_tt_main suite

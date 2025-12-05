@@ -1,7 +1,6 @@
 _build/
 .dune/
 bisect*.coverage
-_coverage/
 
 STYLE_COMPLIANCE.md
 TEST_SUMMARY.md
