@@ -26,7 +26,7 @@ opam exec -- dune build ui/wordle_web.exe
 
 if [ $? -eq 0 ]; then
     echo "✅ Build successful!"
-    echo "🚀 Starting server on http://localhost:8080"
+    echo "🚀 Starting server on http://localhost:8081"
     echo "   Press Ctrl+C to stop the server"
     echo ""
     ./_build/default/ui/wordle_web.exe

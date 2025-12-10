@@ -50,7 +50,7 @@ let is_valid_word_api word =
   try
     (* Use Datamuse API to validate word - query with exact spelling match *)
     let api_url = Printf.sprintf "https://api.datamuse.com/words?sp=%s&max=1" normalized in
-    let command = Printf.sprintf "curl -s \"%s\"" api_url in
+    let command = Printf.sprintf "curl -k -s \"%s\"" api_url in
     let ic = Core_unix.open_process_in command in
     let response = In_channel.input_all ic in
     let exit_status = Core_unix.close_process_in ic in
@@ -81,7 +81,7 @@ let fetch_words_from_random_word_api ~word_length =
     (* Random Word API: use length parameter and request a large number of words *)
     (* Request 10000 words to get comprehensive coverage *)
     let api_url = Printf.sprintf "https://random-word-api.herokuapp.com/word?length=%d&number=10000" word_length in
-    let command = Printf.sprintf "curl -s \"%s\"" api_url in
+    let command = Printf.sprintf "curl -k -s \"%s\"" api_url in
     let ic = Core_unix.open_process_in command in
     let response = In_channel.input_all ic in
     ignore (Core_unix.close_process_in ic);

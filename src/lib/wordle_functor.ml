@@ -8,6 +8,6 @@ module Make (C : Config) = struct
   module Guess = Guess.Make (C)
   module Game = Game.Make (Guess)
   module Utils = Utils.Make (C)
-  module Solver = Solver.Make (Guess)
+  module Solver = Solver.Make (C) (Guess)
 end
 

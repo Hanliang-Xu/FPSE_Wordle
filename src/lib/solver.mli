@@ -1,6 +1,6 @@
 (** Solver module for Wordle game - uses frequency-based strategy *)
 
-module Make (G : Guess.S) : sig
+module Make (C : Config.Config) (G : Guess.S) : sig
   type t
   (** The type representing a solver state.
       Tracks remaining candidate words and guess history. *)

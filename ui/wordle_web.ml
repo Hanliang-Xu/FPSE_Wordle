@@ -74,7 +74,14 @@ let start_game (cfg : game_config) =
   let module W_Instance = Wordle_functor.Make(C) in
   
   (* Load dictionary *)
-  let (words, answers) = Dict.load_dictionary_by_length_api cfg.word_length in
+  let (words_from_api, answers) = Dict.load_dictionary_by_length_api cfg.word_length in
+  let words = 
+    if List.is_empty words_from_api then (
+      Printf.printf "Warning: API failed to load words, falling back to answers list for solver/validation.\n%!";
+      answers
+    ) else words_from_api 
+  in
+  Printf.printf "Loaded %d words and %d answers\n%!" (List.length words) (List.length answers);
   let answer = Dict.get_random_word answers in
   
   (* Create the active game module *)
@@ -199,7 +206,7 @@ let new_game_handler request =
   
   try 
     start_game config;
-    Dream.json "{\"status\":\"success\",\"message\":\"New game started\"}"
+  Dream.json "{\"status\":\"success\",\"message\":\"New game started\"}"
   with 
   | Invalid_argument msg -> 
       Dream.json ~status:`Bad_Request (sprintf "{\"status\":\"error\",\"message\":\"%s\"}" msg)
@@ -225,17 +232,22 @@ let guess_handler request =
           Dream.json ~status:`Bad_Request (sprintf "{\"status\":\"error\",\"message\":\"%s\"}" msg)
       | Ok valid_guess ->
           (* Check if valid word in dictionary *)
-          if not (Dict.is_valid_word_api valid_guess) then
+          (* Use combined validation: check API (Datamuse) AND loaded list (Random Word API or fallback) *)
+          (* This ensures robustness if APIs fail *)
+          let in_list = Dict.is_valid_word valid_guess Active.word_list in
+          let valid_api = Dict.is_valid_word_api valid_guess in
+          
+          if not (in_list || valid_api) then
              Dream.json ~status:`Bad_Request "{\"status\":\"error\",\"message\":\"Not a valid word\"}"
           else if not (Active.W.Game.can_guess !(Active.game_state)) then
-             Dream.json ~status:`Bad_Request "{\"status\":\"error\",\"message\":\"Game is over\"}"
+             Dream.json ~status:`Bad_Request (sprintf "{\"status\":\"error\",\"message\":\"Game is over. The answer was %s\"}" Active.answer)
           else (
             let new_game_state = Active.W.Game.step !(Active.game_state) valid_guess in
             Active.game_state := new_game_state;
             
-            let feedback = 
+        let feedback = 
               match Active.W.Game.last_feedback new_game_state with
-              | Some fb -> fb
+          | Some fb -> fb
               | None -> failwith "Should have feedback"
             in
             
@@ -255,38 +267,42 @@ let guess_handler request =
             (* If game is over, run solver and add comparison *)
             let comparison_json =
               if is_over then (
-                (* Run solver to completion *)
-                let solver_game = Active.W.Game.init 
-                  ~answer:Active.answer
-                  ~max_guesses:Active.config.max_guesses in
-                let solver_state = Active.W.Solver.create Active.word_list in
-                let rec solver_loop game_state solver_state =
-                  if Active.W.Game.is_over game_state then
-                    (Active.W.Game.is_won game_state, Active.W.Game.num_guesses game_state)
-                  else (
-                    let guess = Active.W.Solver.make_guess solver_state in
-                    let new_game_state = Active.W.Game.step game_state guess in
-                    let feedback =
-                      match Active.W.Game.last_feedback new_game_state with
-                      | Some fb -> fb
-                      | None -> failwith "Unexpected: no feedback after step"
-                    in
-                    let new_solver_state = Active.W.Solver.update solver_state feedback in
-                    solver_loop new_game_state new_solver_state
-                  )
-                in
-                let solver_won, solver_guesses = solver_loop solver_game solver_state in
-                let human_guesses = Active.W.Game.num_guesses new_game_state in
-                sprintf ",\"comparison\":{\"humanWon\":%b,\"humanGuesses\":%d,\"botWon\":%b,\"botGuesses\":%d}"
-                  is_won human_guesses solver_won solver_guesses
+                try
+                  (* Run solver to completion *)
+                  let solver_game = Active.W.Game.init 
+                    ~answer:Active.answer
+                    ~max_guesses:Active.config.max_guesses in
+                  let solver_state = Active.W.Solver.create Active.word_list in
+                  let rec solver_loop game_state solver_state =
+                    if Active.W.Game.is_over game_state then
+                      (Active.W.Game.is_won game_state, Active.W.Game.num_guesses game_state)
+                    else (
+                      let guess = Active.W.Solver.make_guess solver_state in
+                      let new_game_state = Active.W.Game.step game_state guess in
+                      let feedback =
+                        match Active.W.Game.last_feedback new_game_state with
+                        | Some fb -> fb
+                        | None -> failwith "Unexpected: no feedback after step"
+                      in
+                      let new_solver_state = Active.W.Solver.update solver_state feedback in
+                      solver_loop new_game_state new_solver_state
+                    )
+                  in
+                  let solver_won, solver_guesses = solver_loop solver_game solver_state in
+                  let human_guesses = Active.W.Game.num_guesses new_game_state in
+                  sprintf ",\"comparison\":{\"humanWon\":%b,\"humanGuesses\":%d,\"botWon\":%b,\"botGuesses\":%d}"
+                    is_won human_guesses solver_won solver_guesses
+                with e ->
+                  Printf.eprintf "Solver error: %s\n%!" (Exn.to_string e);
+                  ",\"comparison\":null"
               ) else ""
             in
-            
-            let response = sprintf 
+        
+        let response = sprintf 
               "{\"status\":\"success\",\"feedback\":%s,\"isWon\":%b,\"isOver\":%b,\"remaining\":%d%s%s}"
               (feedback_to_json feedback) is_won is_over remaining answer_json comparison_json
-            in
-            Dream.json response
+        in
+        Dream.json response
           )
 
 let hint_handler request =
@@ -335,15 +351,15 @@ let state_handler _request =
   | Some (module Active) ->
       let game = !(Active.game_state) in
       let board_json = board_to_json (Active.W.Game.get_board game) in
-      let response = sprintf
+  let response = sprintf
         "{\"board\":%s,\"remaining\":%d,\"isWon\":%b,\"isOver\":%b,\"wordLength\":%d}"
-        board_json
+    board_json
         (Active.W.Game.remaining_guesses game)
         (Active.W.Game.is_won game)
         (Active.W.Game.is_over game)
         Active.config.word_length
-      in
-      Dream.json response
+  in
+  Dream.json response
 
 let index_handler _request =
   Dream.html {|
@@ -414,7 +430,7 @@ let index_handler _request =
                             <input type="range" id="wordLength" min="2" max="10" value="5" oninput="this.nextElementSibling.value = this.value">
                             <output>5</output>
                         </div>
-                    </div>
+                        </div>
                     <div class="setting-item">
                         <label>Max Guesses (1-20)</label>
                         <div class="range-control">
@@ -428,6 +444,12 @@ let index_handler _request =
                             <option value="standard">Three-State (Standard)</option>
                             <option value="binary">Binary (Hard Mode)</option>
                         </select>
+                </div>
+                    <div class="setting-item">
+                        <div class="checkbox-control">
+                            <input type="checkbox" id="showHints" checked>
+                            <label for="showHints">Show Solver Hints</label>
+                        </div>
                     </div>
                     <div class="setting-item">
                         <div class="checkbox-control">
@@ -446,7 +468,7 @@ let index_handler _request =
 |}
 
 let () =
-  Dream.run ~interface:"0.0.0.0" ~port:8080
+  Dream.run ~interface:"0.0.0.0" ~port:8081
   @@ Dream.logger
   @@ Dream.router [
        Dream.get  "/"              index_handler;

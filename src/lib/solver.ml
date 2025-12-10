@@ -1,8 +1,9 @@
 (** Solver module implementation - frequency-based strategy *)
 
 open Core
+open Config
 
-module Make (G : Guess.S) = struct
+module Make (C : Config) (G : Guess.S) = struct
   (* Solver state: tracks remaining candidates and guess history *)
   type t = {
     candidates : string list;
@@ -128,18 +129,25 @@ module Make (G : Guess.S) = struct
                     (true, updated_consumed)
                   ) else (false, consumed_counts)
             | G.Grey ->
-                (* Letter must NOT be in word (unless already marked Yellow/Green elsewhere) *)
-                (* Check if this letter appears elsewhere as Yellow or Green *)
-                let appears_elsewhere = List.existsi colors ~f:(fun j c ->
-                  j <> i && Char.equal (List.nth_exn guess_chars j) guess_char &&
-                  match c with
-                  | G.Green | G.Yellow -> true
-                  | G.Grey -> false) in
-                if appears_elsewhere then (acc_valid, consumed_counts)
-                else
-                  (* Letter should not appear in word at all (excluding Green positions) *)
-                  let count = Map.find word_letter_counts guess_char |> Option.value ~default:0 in
-                  (count = 0, consumed_counts))
+                match C.feedback_granularity with
+                | Config.Binary ->
+                    (* Binary Mode: Grey means letter is NOT at this position *)
+                    (* It does NOT imply the letter is absent from the word *)
+                    if Char.equal guess_char word_char then (false, consumed_counts)
+                    else (acc_valid, consumed_counts)
+                | Config.ThreeState ->
+                    (* Standard Mode: Letter must NOT be in word (unless already marked Yellow/Green elsewhere) *)
+                    (* Check if this letter appears elsewhere as Yellow or Green *)
+                    let appears_elsewhere = List.existsi colors ~f:(fun j c ->
+                      j <> i && Char.equal (List.nth_exn guess_chars j) guess_char &&
+                      match c with
+                      | G.Green | G.Yellow -> true
+                      | G.Grey -> false) in
+                    if appears_elsewhere then (acc_valid, consumed_counts)
+                    else
+                      (* Letter should not appear in word at all (excluding Green positions) *)
+                      let count = Map.find word_letter_counts guess_char |> Option.value ~default:0 in
+                      (count = 0, consumed_counts))
         in
         result
 
