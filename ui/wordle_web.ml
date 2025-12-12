@@ -273,9 +273,10 @@ let guess_handler request =
                     ~answer:Active.answer
                     ~max_guesses:Active.config.max_guesses in
                   let solver_state = Active.W.Solver.create Active.word_list in
-                  let rec solver_loop game_state solver_state =
+                  
+                  let rec solver_loop game_state solver_state history =
                     if Active.W.Game.is_over game_state then
-                      (Active.W.Game.is_won game_state, Active.W.Game.num_guesses game_state)
+                      (Active.W.Game.is_won game_state, Active.W.Game.num_guesses game_state, List.rev history)
                     else (
                       let guess = Active.W.Solver.make_guess solver_state in
                       let new_game_state = Active.W.Game.step game_state guess in
@@ -285,13 +286,24 @@ let guess_handler request =
                         | None -> failwith "Unexpected: no feedback after step"
                       in
                       let new_solver_state = Active.W.Solver.update solver_state feedback in
-                      solver_loop new_game_state new_solver_state
+                      
+                      (* Store history: guess string, colors, distances *)
+                      let entry = feedback_to_json feedback in
+                      
+                      solver_loop new_game_state new_solver_state (entry :: history)
                     )
                   in
-                  let solver_won, solver_guesses = solver_loop solver_game solver_state in
+                  
+                  let solver_won, solver_guesses, solver_history_list = solver_loop solver_game solver_state [] in
+                  let solver_history_json = String.concat ~sep:"," solver_history_list |> sprintf "[%s]" in
+                  
                   let human_guesses = Active.W.Game.num_guesses new_game_state in
-                  sprintf ",\"comparison\":{\"humanWon\":%b,\"humanGuesses\":%d,\"botWon\":%b,\"botGuesses\":%d}"
-                    is_won human_guesses solver_won solver_guesses
+                  
+                  (* Get human history for consistency *)
+                  let human_history_json = board_to_json (Active.W.Game.get_board new_game_state) in
+                  
+                  sprintf ",\"comparison\":{\"humanWon\":%b,\"humanGuesses\":%d,\"humanHistory\":%s,\"botWon\":%b,\"botGuesses\":%d,\"botHistory\":%s}"
+                    is_won human_guesses human_history_json solver_won solver_guesses solver_history_json
                 with e ->
                   Printf.eprintf "Solver error: %s\n%!" (Exn.to_string e);
                   ",\"comparison\":null"
@@ -415,6 +427,19 @@ let index_handler _request =
         </main>
 
         <div class="game-status" id="gameStatus"></div>
+
+        <div class="modal" id="resultModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Game Over</h2>
+                    <button class="modal-close" id="resultClose">&times;</button>
+                </div>
+                <div class="modal-body" id="resultBody">
+                    <!-- Populated by JS -->
+                </div>
+                <button class="btn btn-primary btn-full" id="newGameResultBtn">New Game</button>
+            </div>
+        </div>
 
         <!-- Settings Modal -->
         <div class="modal" id="settingsModal">

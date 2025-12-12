@@ -32,6 +32,13 @@ class WordleApp {
         // Close button handler (cross out) - Just closes modal, resumes game
         document.getElementById('settingsClose').onclick = () => this.hideSettings();
 
+        // Result modal handlers
+        document.getElementById('resultClose').onclick = () => document.getElementById('resultModal').classList.remove('show');
+        document.getElementById('newGameResultBtn').onclick = () => {
+            document.getElementById('resultModal').classList.remove('show');
+            this.showSettings();
+        };
+
         // Global hint request function
         window.requestHint = (mode) => this.requestHint(mode);
 
@@ -120,14 +127,16 @@ class WordleApp {
             this.updateHintControls();
 
             if (data.isWon) {
-                this.state.gameOver = true;
-                this.updateStatus("🎉 You Won!");
-            } else if (data.isOver) {
-                this.state.gameOver = true;
-                this.updateStatus(`Game Over! Answer: ${data.answer}`);
-            } else {
-                this.updateStatus(`Guess ${this.state.board.length}/${this.state.config.maxGuesses}`);
-            }
+            this.state.gameOver = true;
+                        this.updateStatus("🎉 You Won!");
+                        this.showCompetitionResult(true, data.answer, data.comparison);
+                    } else if (data.isOver) {
+                        this.state.gameOver = true;
+                        this.updateStatus(`Game Over! Answer: ${data.answer}`);
+                        this.showCompetitionResult(false, data.answer, data.comparison);
+                    } else {
+                        this.updateStatus(`Guess ${this.state.board.length}/${this.state.config.maxGuesses}`);
+                    }
 
             if (data.solverHint) {
                 this.updateSolverPanel(data);
@@ -369,6 +378,81 @@ class WordleApp {
 
     updateStatus(msg) {
         document.getElementById('gameStatus').textContent = msg;
+    }
+
+    showCompetitionResult(userWon, answer, comparison) {
+        const modal = document.getElementById('resultModal');
+        const body = document.getElementById('resultBody');
+        
+        // Helper to generate the text-based board representation
+        const renderTextBoard = (history) => {
+            return history.map((entry, idx) => {
+                let colorMap = entry.colors.map(c => {
+                    if (c === 'correct') return 'G';
+                    if (c === 'present') return 'Y';
+                    return '.';
+                }).join('');
+                
+                let distInfo = '';
+                if (entry.distances) {
+                    let dists = entry.distances.map((d, i) => d !== null ? `pos${i}:${d > 0 ? '+' : ''}${d}` : null).filter(x => x);
+                    if (dists.length > 0) distInfo = ` [${dists.join(', ')}]`;
+                }
+                
+                return `<div class="history-line">
+                    <span class="history-guess">${entry.guess}</span>: 
+                    <span class="history-colors">${colorMap}</span>
+                    <span class="history-dist">${distInfo}</span>
+                </div>`;
+            }).join('');
+        };
+
+        let html = `
+            <div class="result-answer">
+                <div style="font-size: 0.9rem; opacity: 0.7; margin-bottom: 5px;">The word was</div>
+                <div style="font-size: 1.5rem; font-weight: bold; letter-spacing: 2px;">${answer}</div>
+            </div>
+        `;
+
+        if (comparison) {
+            let message = '';
+            
+            if (userWon && comparison.botWon) {
+                if (comparison.humanGuesses < comparison.botGuesses) message = `🏆 You beat the bot! (${comparison.humanGuesses} vs ${comparison.botGuesses})`;
+                else if (comparison.humanGuesses > comparison.botGuesses) message = `🤖 Bot wins! (${comparison.botGuesses} vs ${comparison.humanGuesses})`;
+                else message = `🤝 It's a tie! Both solved in ${comparison.humanGuesses}`;
+            } else if (userWon) {
+                message = "🏆 You won! Bot couldn't solve it.";
+            } else if (comparison.botWon) {
+                message = `🤖 Bot wins! Solved in ${comparison.botGuesses}.`;
+            } else {
+                message = `😔 Both lost.`;
+            }
+
+            html += `
+                <div class="result-message">${message}</div>
+                
+                <div class="comparison-container">
+                    <div class="comparison-column">
+                        <h4>You (${userWon ? 'Won' : 'Lost'})</h4>
+                        <div class="history-block">
+                            ${renderTextBoard(comparison.humanHistory)}
+                        </div>
+                    </div>
+                    <div class="comparison-column">
+                        <h4>Bot (${comparison.botWon ? 'Won' : 'Lost'})</h4>
+                        <div class="history-block">
+                            ${renderTextBoard(comparison.botHistory)}
+                        </div>
+                    </div>
+                </div>
+            `;
+        } else {
+            html += `<div class="result-message">${userWon ? "You Won!" : "Game Over"}</div>`;
+        }
+
+        body.innerHTML = html;
+        setTimeout(() => modal.classList.add('show'), 1500); // Small delay for suspense
     }
 
     showSettings() {
