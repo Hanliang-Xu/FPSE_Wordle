@@ -4,6 +4,12 @@
 module type S = sig
   include module type of Feedback
   
+  val validate_length : string -> bool
+  (** [validate_length s] returns true if [s] has the configured word length *)
+  
+  val validate_guess : string -> (string, string) result
+  (** [validate_guess s] returns [Ok s] if valid, [Error msg] otherwise *)
+  
   val generate : string -> string -> Feedback.t
   (** [generate guess answer] returns feedback colors.
       Requires: both strings have length equal to [word_length] *)

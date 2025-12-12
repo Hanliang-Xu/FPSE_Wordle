@@ -5,6 +5,9 @@ open OUnit2
 module MockGuess = struct
   include Lib.Feedback
   
+  let validate_length _ = true
+  let validate_guess s = Ok s
+  
   (** Simple mock implementation: 
       - If guess equals answer, all Green
       - Otherwise, all Grey *)

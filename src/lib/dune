@@ -1,6 +1,6 @@
 (library
   (name lib)
-  (modules dict guess game utils solver wordle_functor config feedback ui hints game_loop)
+(modules dict guess game solver wordle_functor config feedback ui hints game_loop)
   (modules_without_implementation config)
   (libraries core core_unix yojson)
   (preprocess (pps ppx_jane bisect_ppx))

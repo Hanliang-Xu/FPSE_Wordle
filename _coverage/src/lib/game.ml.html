@@ -147,7 +147,7 @@ module Make (G : Guess.S) = struct
   }
 
   (** Initialize an empty game state with the answer *)
-  let init ~answer ~max_guesses = <span data-count="48">{</span>
+  let init ~answer ~max_guesses = <span data-count="19">{</span>
     board = [];
     max_guesses;
     answer;
@@ -155,37 +155,37 @@ module Make (G : Guess.S) = struct
 
   (** Add a new guess to the game state, generating feedback internally *)
   let step game_state guess =
-    <span data-count="64">l</span>et feedback = G.make_feedback guess game_state.answer in
-    <span data-count="64">{</span> game_state with board = game_state.board @ [feedback] }
+    <span data-count="32">l</span>et feedback = G.make_feedback guess game_state.answer in
+    <span data-count="32">{</span> game_state with board = game_state.board @ [feedback] }
 
   (** Return the number of guesses made so far *)
-  let num_guesses game_state = <span data-count="63">L</span>ist.length game_state.board
+  let num_guesses game_state = <span data-count="34">L</span>ist.length game_state.board
 
   (** Check if the last guess was correct (all colors are Green) *)
   let is_won game_state =
-    <span data-count="44">m</span>atch List.rev game_state.board with
-    | <span data-count="8">[</span>] -&gt; false
-    | <span data-count="36">f</span>eedback :: _ -&gt; G.is_correct feedback
+    <span data-count="32">m</span>atch List.rev game_state.board with
+    | <span data-count="6">[</span>] -&gt; false
+    | <span data-count="26">f</span>eedback :: _ -&gt; G.is_correct feedback
 
   (** Return the current board state *)
   let get_board game_state = <span data-count="5">g</span>ame_state.board
 
   (** Return the most recent feedback, or None if no guesses have been made *)
   let last_feedback game_state =
-    <span data-count="16">m</span>atch List.rev game_state.board with
+    <span data-count="6">m</span>atch List.rev game_state.board with
     | <span data-count="2">[</span>] -&gt; None
-    | <span data-count="14">f</span>eedback :: _ -&gt; Some feedback
+    | <span data-count="4">f</span>eedback :: _ -&gt; Some feedback
 
   (** Return the number of guesses remaining *)
   let remaining_guesses game_state =
     <span data-count="11">m</span>ax 0 (game_state.max_guesses - num_guesse<span data-count="11">s</span> game_state)
 
   (** Return the maximum number of guesses allowed *)
-  let max_guesses game_state = <span data-count="7">g</span>ame_state.max_guesses
+  let max_guesses game_state = <span data-count="4">g</span>ame_state.max_guesses
 
   (** Check if the game is over (won or max guesses reached) *)
   let is_over game_state =
-    <span data-count="26">i</span>s_wo<span data-count="26">n</span> game_stat<span data-count="7">e</span> || num_guesse<span data-count="19">s</span> game_state &gt;= game_state.max_guesse<span data-count="4">s</span>
+    <span data-count="20">i</span>s_wo<span data-count="20">n</span> game_stat<span data-count="5">e</span> || num_guesse<span data-count="15">s</span> game_state &gt;= game_state.max_guesse<span data-count="4">s</span>
 
   (** Check if more guesses can be made *)
   let can_guess game_state =

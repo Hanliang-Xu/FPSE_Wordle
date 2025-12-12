@@ -45,7 +45,7 @@ module type ActiveGame_S = sig
       val update : t -> Feedback.feedback -> t
       val candidate_count : t -> int
     end
-    module Utils : sig
+    module Guess : sig
       val validate_guess : string -> (string, string) result
     end
   end
@@ -227,7 +227,7 @@ let guess_handler request =
         with _ -> ""
       in
       
-      match Active.W.Utils.validate_guess guess with
+      match Active.W.Guess.validate_guess guess with
       | Error msg -> 
           Dream.json ~status:`Bad_Request (sprintf "{\"status\":\"error\",\"message\":\"%s\"}" msg)
       | Ok valid_guess ->

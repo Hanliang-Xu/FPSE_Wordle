@@ -109,8 +109,8 @@ let run_with_config ~word_length ~max_guesses ~show_hints ~feedback_granularity 
         (* Normalize guess for consistency *)
         let normalized_guess = Dict.normalize_word guess in
         
-        (* Validate the guess using Utils *)
-        match W.Utils.validate_guess normalized_guess with
+        (* Validate the guess using Guess helpers *)
+        match W.Guess.validate_guess normalized_guess with
         | Ok valid_guess ->
           (* Check if word is valid using API *)
           Printf.printf "Validating word via API... ";

@@ -64,18 +64,18 @@ let test_game_module _ =
   assert_equal 2 (W5.Game.num_guesses game2);
   assert_equal true (W5.Game.is_won game2)
 
-(** Test Utils module *)
+(** Test Guess validation module *)
 let test_utils_module _ =
   assert_bool "5-letter word should be valid" 
-    (W5.Utils.validate_length "hello");
+    (W5.Guess.validate_length "hello");
   assert_bool "3-letter word should be invalid" 
-    (not (W5.Utils.validate_length "cat"));
+    (not (W5.Guess.validate_length "cat"));
   
-  (match W5.Utils.validate_guess "hello" with
+  (match W5.Guess.validate_guess "hello" with
   | Ok word -> assert_equal "hello" word ~printer:Fn.id
   | Error _ -> assert_failure "Should return Ok for valid word");
   
-  (match W5.Utils.validate_guess "cat" with
+  (match W5.Guess.validate_guess "cat" with
   | Ok _ -> assert_failure "Should return Error for invalid length"
   | Error _ -> ())
 
@@ -184,7 +184,7 @@ let test_with_real_dictionaries _ =
       let solver = W5.Solver.create words in
       let guess = W5.Solver.make_guess solver in
       assert_bool "Guess should be valid length"
-        (W5.Utils.validate_length guess);
+        (W5.Guess.validate_length guess);
 
       (* Create game with real answer *)
       let answer = Lib.Dict.get_random_word answers in

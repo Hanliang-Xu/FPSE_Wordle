@@ -56,13 +56,13 @@ let test_config_independence _ =
   
   (* Each should validate according to its own word_length *)
   assert_bool "W3 should validate 3-letter words" 
-    (W3.Utils.validate_length "cat");
+    (W3.Guess.validate_length "cat");
   assert_bool "W3 should reject 5-letter words" 
-    (not (W3.Utils.validate_length "hello"));
+    (not (W3.Guess.validate_length "hello"));
   assert_bool "W5 should validate 5-letter words" 
-    (W5.Utils.validate_length "hello");
+    (W5.Guess.validate_length "hello");
   assert_bool "W5 should reject 3-letter words" 
-    (not (W5.Utils.validate_length "cat"))
+    (not (W5.Guess.validate_length "cat"))
 
 (** Test feedback_granularity affects Guess behavior *)
 let test_feedback_granularity_three_state _ =
@@ -113,7 +113,7 @@ let test_config_with_real_dictionaries _ =
         let solver = W.Solver.create word_list in
         let guess = W.Solver.make_guess solver in
         assert_bool (Printf.sprintf "Guess should be valid length %d" length)
-          (W.Utils.validate_length guess);
+          (W.Guess.validate_length guess);
         let game1 = W.Game.step game guess in
         assert_equal 1 (W.Game.num_guesses game1)
       )
@@ -162,9 +162,9 @@ let test_multiple_configs_simultaneously _ =
   let guess5 = W5.Solver.make_guess solver5 in
   let guess7 = W7.Solver.make_guess solver7 in
   
-  assert_bool "3-letter guess should be valid" (W3.Utils.validate_length guess3);
-  assert_bool "5-letter guess should be valid" (W5.Utils.validate_length guess5);
-  assert_bool "7-letter guess should be valid" (W7.Utils.validate_length guess7);
+  assert_bool "3-letter guess should be valid" (W3.Guess.validate_length guess3);
+  assert_bool "5-letter guess should be valid" (W5.Guess.validate_length guess5);
+  assert_bool "7-letter guess should be valid" (W7.Guess.validate_length guess7);
   
   let game3_1 = W3.Game.step game3 guess3 in
   let game5_1 = W5.Game.step game5 guess5 in
@@ -224,8 +224,8 @@ let test_config_edge_lengths _ =
       let _ = W2.Game.init ~answer:answer2 ~max_guesses:5 in
       let _ = W10.Game.init ~answer:answer10 ~max_guesses:6 in
       
-      assert_bool "2-letter answer should be valid" (W2.Utils.validate_length answer2);
-      assert_bool "10-letter answer should be valid" (W10.Utils.validate_length answer10)
+      assert_bool "2-letter answer should be valid" (W2.Guess.validate_length answer2);
+      assert_bool "10-letter answer should be valid" (W10.Guess.validate_length answer10)
     ) else (
       Printf.printf "Skipping test: missing answer files\n"
     )

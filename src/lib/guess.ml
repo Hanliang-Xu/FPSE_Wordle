@@ -6,6 +6,9 @@ open Config
 module type S = sig
   include module type of Feedback
   
+  val validate_length : string -> bool
+  val validate_guess : string -> (string, string) result
+  
   val generate : string -> string -> Feedback.t
   val make_feedback : string -> string -> Feedback.feedback
   val is_correct : Feedback.feedback -> bool
@@ -16,6 +19,16 @@ end
 
 module Make (C : Config) : S = struct
   include Feedback
+  
+  let validate_length s =
+    String.length s = C.word_length
+
+  let validate_guess s =
+    if validate_length s then
+      Ok s
+    else
+      Error (Printf.sprintf "Invalid word length: expected %d, got %d"
+               C.word_length (String.length s))
   
   let generate guess answer =
     match C.feedback_granularity with

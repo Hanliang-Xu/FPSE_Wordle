@@ -51,7 +51,7 @@ let test_full_game_with_real_dict _ =
       else (
         let guess = W.Solver.make_guess solver_state in
         assert_bool "Guess should be valid length" 
-          (W.Utils.validate_length guess);
+          (W.Guess.validate_length guess);
         assert_bool "Guess should be in words list" 
           (Lib.Dict.is_valid_word guess word_list);
         
@@ -96,7 +96,7 @@ let test_multiple_word_lengths_full_flow _ =
         let solver = W.Solver.create words in
 
         let guess = W.Solver.make_guess solver in
-        match W.Utils.validate_guess guess with
+        match W.Guess.validate_guess guess with
         | Ok valid_guess ->
             let game1 = W.Game.step game valid_guess in
             assert_equal 1 (W.Game.num_guesses game1);
@@ -237,9 +237,9 @@ let test_multiple_configs_simultaneously _ =
   let guess5 = W5.Solver.make_guess solver5 in
   let guess7 = W7.Solver.make_guess solver7 in
   
-  assert_bool "3-letter guess should be valid" (W3.Utils.validate_length guess3);
-  assert_bool "5-letter guess should be valid" (W5.Utils.validate_length guess5);
-  assert_bool "7-letter guess should be valid" (W7.Utils.validate_length guess7);
+  assert_bool "3-letter guess should be valid" (W3.Guess.validate_length guess3);
+  assert_bool "5-letter guess should be valid" (W5.Guess.validate_length guess5);
+  assert_bool "7-letter guess should be valid" (W7.Guess.validate_length guess7);
   
   let game3_1 = W3.Game.step game3 guess3 in
   let game5_1 = W5.Game.step game5 guess5 in

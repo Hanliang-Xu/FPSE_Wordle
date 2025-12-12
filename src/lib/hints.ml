@@ -61,6 +61,37 @@ let generate_hint_mode2 ~answer ~guesses_with_colors =
   | letters ->
       List.nth_exn letters (Random.int (List.length letters))
 
+(* Generate a mode-2 hint that prefers giving a new letter when possible. *)
+let generate_hint_mode2_fresh ~answer ~guesses_with_colors ~existing_hints =
+  (* Base candidate letters are the unrevealed letters if any; otherwise all letters of answer. *)
+  let base_candidates =
+    let revealed_letters = 
+      List.fold guesses_with_colors ~init:(Set.empty (module Char)) ~f:(fun acc (guess, colors) ->
+        List.fold2_exn (String.to_list guess) colors ~init:acc ~f:(fun acc' char color ->
+          match color with
+          | Feedback.Green | Feedback.Yellow -> Set.add acc' char
+          | _ -> acc'
+        )
+      )
+    in
+    let answer_letters = String.to_list answer |> List.dedup_and_sort ~compare:Char.compare in
+    let unrevealed_letters = 
+      List.filter answer_letters ~f:(fun c -> not (Set.mem revealed_letters c))
+    in
+    match unrevealed_letters with
+    | [] -> answer_letters
+    | letters -> letters
+  in
+  let fresh_candidates =
+    List.filter base_candidates ~f:(fun c ->
+      not (List.mem existing_hints c ~equal:Char.equal)
+    )
+  in
+  match fresh_candidates with
+  | [] -> generate_hint_mode2 ~answer ~guesses_with_colors
+  | letters ->
+      List.nth_exn letters (Random.int (List.length letters))
+
 (** Display all cumulative hints *)
 let display_cumulative_hints ~word_length hints =
   if List.is_empty hints.mode1_hints && List.is_empty hints.mode2_hints then
@@ -123,10 +154,11 @@ let offer_hint ~answer ~guesses_with_colors ~cumulative_hints =
           updated_hints
         )
     | 2 ->
-        let letter = generate_hint_mode2 ~answer ~guesses_with_colors in
-        (* Check if this letter is already hinted *)
+        (* Try to provide a new letter if possible *)
+        let letter = generate_hint_mode2_fresh ~answer ~guesses_with_colors ~existing_hints:cumulative_hints.mode2_hints in
         let already_hinted = List.mem cumulative_hints.mode2_hints letter ~equal:Char.equal in
         if already_hinted then (
+          (* No new letter available; keep hints unchanged *)
           Printf.printf "Letter '%c' is already revealed!\n" letter;
           cumulative_hints
         ) else (

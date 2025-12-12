@@ -1,7 +1,5 @@
 (** Functor that creates a Wordle game module for a specific word length.
-    This functor composes the Feedback, Game, Utils, and Solver modules.
-    The implementation is in wordle.ml, which instantiates the functors from
-    feedback.mli, game.mli, utils.mli, and solver.mli. *)
+    This functor composes the Feedback, Guess, Game, and Solver modules. *)
 module Make (C : Config.Config) : sig
   open Feedback
   
@@ -28,11 +26,6 @@ module Make (C : Config.Config) : sig
     val max_guesses : t -> int
     val is_over : t -> bool
     val can_guess : t -> bool
-  end
-
-  module Utils : sig
-    val validate_length : string -> bool
-    val validate_guess : string -> (string, string) result
   end
 
   module Solver : sig
