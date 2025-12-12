@@ -259,7 +259,7 @@ let guess_handler request =
             let remaining = Active.W.Game.remaining_guesses new_game_state in
             
             let answer_json = 
-              if is_over && not is_won then
+              if is_over then
                 sprintf ",\"answer\":\"%s\"" Active.answer
               else ""
             in
