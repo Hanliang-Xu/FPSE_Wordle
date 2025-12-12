@@ -21,8 +21,6 @@ module Make (C : Config) (G : Guess.S) = struct
         Map.update acc char ~f:(function
           | None -> 1
           | Some count -> count + 1)))
-    |> Map.to_alist
-    |> Map.of_alist_exn (module Char)
 
   (* Score a word based on letter frequencies *)
   let score_word frequencies word =

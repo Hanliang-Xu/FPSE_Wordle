@@ -9,4 +9,3 @@ module Make (C : Config) = struct
   module Game = Game.Make (Guess)
   module Solver = Solver.Make (C) (Guess)
 end
-
