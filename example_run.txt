@@ -1,285 +1,6 @@
 === Wordle Configuration ===
 Word length (2-10) [default: 5]: 5
 Max guesses [default: 6]: 6
-Show hints (solver's guess) [default: yes] (y/n): y
-Feedback mode:
-  1. Three-state (Green/Yellow/Grey) - standard Wordle
-  2. Binary (Green/Grey only) - harder mode
-Choose [default: 1]: 1
-Show position distances for Yellow letters [default: no] (y/n): n
-
-Loading words from Random Word API... Done!
-Loaded 8885 valid words
-Loaded 611 possible answers
-Solver initialized with 8885 candidate words
-Max guesses: 6
-Hints: enabled
-Starting game!
-
-Hint (solver's guess): arose
-Solver: 8885 candidate words remaining
-Enter your guess: crane
-Validating word via API... Valid!
-Guess 1/6: crane: .Y.Y.
-Solver: 423 candidate words remaining (filtered from 8885)
-
-Remaining guesses: 5
-
-Do you want a hint? [default: no] (y/n): n
-
-
-Hint (solver's guess): arose
-Solver: 423 candidate words remaining
-Enter your guess: store
-Validating word via API... Valid!
-Guess 2/6: store: .G.G.
-Solver: 12 candidate words remaining (filtered from 423)
-
-Remaining guesses: 4
-
-Do you want a hint? [default: no] (y/n): y
-Hint mode:
-  1. Show a correct letter in its correct position
-  2. Show a correct letter (without position)
-Choose [default: 1]: 1
-Hint: _o__e
-
-Do you want a hint? [default: no] (y/n): n
-
-
-Hint (solver's guess): those
-Solver: 12 candidate words remaining
-Enter your guess: those
-Validating word via API... Valid!
-Guess 3/6: those: GGGGG
-Congratulations! You guessed it in 3 times!
-
-Game over! The answer was: those
-crane: .Y.Y.
-store: .G.G.
-those: GGGGG
-
-
-=== Example Run 2: Game Lost ===
-
-=== Wordle Configuration ===
-Word length (2-10) [default: 5]: 5
-Max guesses [default: 6]: 6
-Show hints (solver's guess) [default: yes] (y/n): y
-Feedback mode:
-  1. Three-state (Green/Yellow/Grey) - standard Wordle
-  2. Binary (Green/Grey only) - harder mode
-Choose [default: 1]: 1
-Show position distances for Yellow letters [default: no] (y/n): n
-
-Loading words from Random Word API... Done!
-Loaded 8885 valid words
-Loaded 611 possible answers
-Solver initialized with 8885 candidate words
-Max guesses: 6
-Hints: enabled
-Starting game!
-
-Hint (solver's guess): arose
-Solver: 8885 candidate words remaining
-Enter your guess: quick
-Validating word via API... Valid!
-Guess 1/6: quick: .....
-Solver: 3421 candidate words remaining (filtered from 8885)
-
-Remaining guesses: 5
-
-Do you want a hint? [default: no] (y/n): n
-
-
-Hint (solver's guess): arose
-Solver: 3421 candidate words remaining
-Enter your guess: plane
-Validating word via API... Valid!
-Guess 2/6: plane: Y.Y..
-Solver: 89 candidate words remaining (filtered from 3421)
-
-Remaining guesses: 4
-
-Do you want a hint? [default: no] (y/n): y
-Hint mode:
-  1. Show a correct letter in its correct position
-  2. Show a correct letter (without position)
-Choose [default: 1]: 2
-Hint: The letters a, l, n are in the answer
-
-Do you want a hint? [default: no] (y/n): n
-
-
-Hint (solver's guess): alone
-Solver: 89 candidate words remaining
-Enter your guess: alone
-Validating word via API... Valid!
-Guess 3/6: alone: Y.YY.
-Solver: 23 candidate words remaining (filtered from 89)
-
-Remaining guesses: 3
-
-Do you want a hint? [default: no] (y/n): y
-Hint (positions): _l___
-Hint (letters): a, l, n
-Hint mode:
-  1. Show a correct letter in its correct position
-  2. Show a correct letter (without position)
-Choose [default: 1]: 1
-Hint: _l__e
-
-Do you want a hint? [default: no] (y/n): n
-
-
-Hint (solver's guess): glide
-Solver: 23 candidate words remaining
-Enter your guess: glide
-Validating word via API... Valid!
-Guess 4/6: glide: .G.Y.
-Solver: 8 candidate words remaining (filtered from 23)
-
-Remaining guesses: 2
-
-Do you want a hint? [default: no] (y/n): n
-
-
-Hint (solver's guess): slide
-Solver: 8 candidate words remaining
-Enter your guess: slide
-Validating word via API... Valid!
-Guess 5/6: slide: .G.Y.
-Solver: 4 candidate words remaining (filtered from 8)
-
-Remaining guesses: 1
-
-Do you want a hint? [default: no] (y/n): y
-Hint (positions): _l__e
-Hint (letters): a, l, n
-Hint mode:
-  1. Show a correct letter in its correct position
-  2. Show a correct letter (without position)
-Choose [default: 1]: 1
-Position 2 is already revealed!
-
-Do you want a hint? [default: no] (y/n): n
-
-
-Hint (solver's guess): flake
-Solver: 4 candidate words remaining
-Enter your guess: flake
-Validating word via API... Valid!
-Guess 6/6: flake: .G.Y.
-Game over! The answer was: blade
-
-Game over! The answer was: blade
-quick: .....
-plane: Y.Y..
-alone: Y.YY.
-glide: .G.Y.
-slide: .G.Y.
-flake: .G.Y.
-
-
-=== Example Run 3: Binary Mode ===
-
-=== Wordle Configuration ===
-Word length (2-10) [default: 5]: 5
-Max guesses [default: 6]: 6
-Show hints (solver's guess) [default: yes] (y/n): n
-Feedback mode:
-  1. Three-state (Green/Yellow/Grey) - standard Wordle
-  2. Binary (Green/Grey only) - harder mode
-Choose [default: 1]: 2
-Show position distances for Yellow letters [default: no] (y/n): n
-
-Loading words from Random Word API... Done!
-Loaded 8885 valid words
-Loaded 611 possible answers
-Solver initialized with 8885 candidate words
-Max guesses: 6
-Hints: disabled
-Starting game!
-
-Enter your guess: crane
-Validating word via API... Valid!
-Guess 1/6: crane: .G.G.
-
-Remaining guesses: 5
-
-Do you want a hint? [default: no] (y/n): y
-Hint mode:
-  1. Show a correct letter in its correct position
-  2. Show a correct letter (without position)
-Choose [default: 1]: 1
-Hint: _r__e
-
-Do you want a hint? [default: no] (y/n): n
-
-
-Enter your guess: trace
-Validating word via API... Valid!
-Guess 2/6: trace: GGGGG
-Congratulations! You guessed it in 2 times!
-
-Game over! The answer was: trace
-crane: .G.G.
-trace: GGGGG
-
-
-=== Example Run 4: Invalid Input Handling ===
-
-=== Wordle Configuration ===
-Word length (2-10) [default: 5]: 15
-Invalid input. Using default: 5
-Max guesses [default: 6]: 
-Show hints (solver's guess) [default: yes] (y/n): maybe
-invalid input enter y/n
-Show hints (solver's guess) [default: yes] (y/n): y
-Feedback mode:
-  1. Three-state (Green/Yellow/Grey) - standard Wordle
-  2. Binary (Green/Grey only) - harder mode
-Choose [default: 1]: 3
-Invalid input. Using default: Three-state
-Show position distances for Yellow letters [default: no] (y/n): n
-
-Loading words from Random Word API... Done!
-Loaded 8885 valid words
-Loaded 611 possible answers
-Solver initialized with 8885 candidate words
-Max guesses: 6
-Hints: enabled
-Starting game!
-
-Hint (solver's guess): arose
-Solver: 8885 candidate words remaining
-Enter your guess: abc
-Validating word via API... Valid!
-Invalid guess: Word length mismatch: expected 5, got 3
-
-Hint (solver's guess): arose
-Solver: 8885 candidate words remaining
-Enter your guess: abcde
-Validating word via API... Invalid word: abcde is not a valid word
-
-Hint (solver's guess): arose
-Solver: 8885 candidate words remaining
-Enter your guess: hello
-Validating word via API... Valid!
-Guess 1/6: hello: Y.Y..
-Solver: 1245 candidate words remaining (filtered from 8885)
-
-Remaining guesses: 5
-
-Do you want a hint? [default: no] (y/n): n
-
-
-=== Example Run 5: With Position Distances ===
-
-=== Wordle Configuration ===
-Word length (2-10) [default: 5]: 5
-Max guesses [default: 6]: 6
-Show hints (solver's guess) [default: yes] (y/n): y
 Feedback mode:
   1. Three-state (Green/Yellow/Grey) - standard Wordle
   2. Binary (Green/Grey only) - harder mode
@@ -289,53 +10,51 @@ Show position distances for Yellow letters [default: no] (y/n): y
 Loading words from Random Word API... Done!
 Loaded 8885 valid words
 Loaded 611 possible answers
-Solver initialized with 8885 candidate words
 Max guesses: 6
-Hints: enabled
-Starting game!
+Starting game! (Bot will compete after you finish)
 
-Hint (solver's guess): arose
-Solver: 8885 candidate words remaining
-Enter your guess: trace
+Enter your guess: apple
 Validating word via API... Valid!
-Guess 1/6: trace: YGG.G [pos0:+1]
-Solver: 45 candidate words remaining (filtered from 8885)
-
+Guess 1/6: apple: Y..G. [pos0:+1]
 Remaining guesses: 5
 
+Do you want a hint? [default: no] (y/n): bashs
+invalid input enter y/n
 Do you want a hint? [default: no] (y/n): n
 
-
-Hint (solver's guess): crate
-Solver: 45 candidate words remaining
-Enter your guess: crate
+Enter your guess: naked
 Validating word via API... Valid!
-Guess 2/6: crate: GGGGG
-Congratulations! You guessed it in 2 times!
+Guess 2/6: naked: .G..Y [pos4:-2]
+Remaining guesses: 4
 
-Game over! The answer was: crate
-trace: YGG.G [pos0:+1]
-crate: GGGGG
+Do you want a hint? [default: no] (y/n): n   
+
+Enter your guess: shade
+Validating word via API... Valid!
+Guess 3/6: shade: G.YY. [pos2:-1, pos3:-1]
+Remaining guesses: 3
+
+Do you want a hint? [default: no] (y/n): n  
+
+Enter your guess: sadly
+Validating word via API... Valid!
+Guess 4/6: sadly: GGGGG
+Congratulations! You guessed it in 4 times!
+Congratulations! You won!
+apple: Y..G. [pos0:+1]
+naked: .G..Y [pos4:-2]
+shade: G.YY. [pos2:-1, pos3:-1]
+sadly: GGGGG
+
+=== Competition Results ===
+Running solver...
+Bot guess 1/6: arose: Y..Y. [pos0:+1, pos3:-3]
+Bot guess 2/6: salic: GGY.. [pos2:+1]
+Bot guess 3/6: sault: GG.G.
+Bot guess 4/6: sadly: GGGGG
 
 
-=== Notes ===
+Human: Won in 4 guesses
+Bot:   Won in 4 guesses
 
-Feedback Colors:
-- G = Green (correct letter in correct position)
-- Y = Yellow (correct letter in wrong position)
-- . = Grey (letter not in word)
-
-Position Distances (when enabled):
-- Shows the distance a Yellow letter needs to move to reach its correct position
-- Example: [pos0:+1] means the letter at position 0 needs to move 1 position to the right
-
-Hints:
-- Mode 1: Shows a correct letter in its correct position (e.g., _o__e)
-- Mode 2: Shows correct letters without position information (e.g., a, l, n)
-- Hints are cumulative and displayed before each guess
-
-Solver:
-- Provides intelligent guesses based on remaining candidate words
-- Updates after each guess based on feedback
-- Shows remaining candidate count when hints are enabled
-
+🤝 It's a tie! Both solved it in 4 guesses
