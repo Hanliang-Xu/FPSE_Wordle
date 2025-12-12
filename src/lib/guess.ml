@@ -3,21 +3,6 @@
 open Core
 open Config
 
-(* Helper functions defined outside functor for better coverage tracking *)
-let color_to_string_impl = function
-  | Feedback.Green -> "G"
-  | Feedback.Yellow -> "Y"
-  | Feedback.Grey -> "."
-
-let colors_to_string_impl colors =
-  List.map colors ~f:color_to_string_impl |> String.concat ~sep:""
-
-let to_string_impl { Feedback.guess; colors; _ } =
-  Printf.sprintf "%s: %s" guess (colors_to_string_impl colors)
-
-let is_correct_impl { Feedback.colors; _ } =
-  List.for_all colors ~f:(function Feedback.Green -> true | _ -> false)
-
 module type S = sig
   include module type of Feedback
   
@@ -130,9 +115,16 @@ module Make (C : Config) : S = struct
     let distances = calculate_distances guess answer colors in
     { guess; colors; distances }
 
-  let is_correct = is_correct_impl
-  let color_to_string = color_to_string_impl
-  let colors_to_string = colors_to_string_impl
+  let is_correct { colors; _ } =
+    List.for_all colors ~f:(function Green -> true | _ -> false)
+
+  let color_to_string = function
+    | Green -> "G"
+    | Yellow -> "Y"
+    | Grey -> "."
+
+  let colors_to_string colors =
+    List.map colors ~f:color_to_string |> String.concat ~sep:""
 
   let to_string { guess; colors; distances } =
     let base = Printf.sprintf "%s: %s" guess (colors_to_string colors) in

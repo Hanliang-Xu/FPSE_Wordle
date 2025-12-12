@@ -42,20 +42,27 @@ val word_count : string list -> int
 val supported_lengths : int list
 (** [supported_lengths] returns the list of supported word lengths [2; 3; 4; 5; 6; 7; 8; 9; 10]. *)
 
-val is_valid_word_api : string -> bool
-(** [is_valid_word_api word] checks if [word] is valid by calling a dictionary API.
+val is_valid_word_api : ?url_pattern:string -> string -> bool
+(** [is_valid_word_api ?url_pattern word] checks if [word] is valid by calling a dictionary API.
+    The optional [url_pattern] allows overriding the API URL pattern (default: "https://api.datamuse.com/words?sp=%s&max=1").
+    The pattern should contain %s placeholder for the word.
     Returns true if the word is valid, false otherwise.
     This function makes an HTTP request to validate the word. *)
 
-val load_words_from_api : word_length:int -> string list
-(** [load_words_from_api ~word_length] fetches words of the specified length from Random Word API.
+val load_words_from_api : ?url_pattern:string -> int -> string list
+(** [load_words_from_api ?url_pattern word_length] fetches words of the specified length from Random Word API.
+    The optional [url_pattern] allows overriding the API URL pattern
+    (default: "https://random-word-api.herokuapp.com/word?length=%d&number=10000").
+    The pattern should contain %d placeholder for word_length.
     Uses single API call to get all words - no API key required, no fallback to local files.
     Returns a list of normalized (lowercase) words.
     Returns empty list if API fails.
     Raises [Invalid_argument] if word_length is not between 2 and 10. *)
 
-val load_dictionary_by_length_api : int -> (string list * string list)
-(** [load_dictionary_by_length_api n] loads words and answers for n-letter words.
+val load_dictionary_by_length_api : ?url_pattern:string -> int -> (string list * string list)
+(** [load_dictionary_by_length_api ?url_pattern n] loads words and answers for n-letter words.
+    The optional [url_pattern] allows overriding the Random Word API URL pattern
+    (default: "https://random-word-api.herokuapp.com/word?length=%d&number=10000").
     Returns (words, answers) tuple where:
     - words: loaded from Random Word API only (for solver guesses and user guesses) - no local file fallback
     - answers: loaded from local files (for game answers)

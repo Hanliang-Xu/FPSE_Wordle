@@ -45,11 +45,12 @@ let get_random_word dictionary =
     List.nth_exn dictionary index
 
 (** Checks if a word is valid by calling Datamuse API *)
-let is_valid_word_api word =
+let is_valid_word_api ?(url_pattern="https://api.datamuse.com/words?sp=%s&max=1") word =
   let normalized = normalize_word word in
   try
     (* Use Datamuse API to validate word - query with exact spelling match *)
-    let api_url = Printf.sprintf "https://api.datamuse.com/words?sp=%s&max=1" normalized in
+    let fmt = Scanf.format_from_string url_pattern "%s" in
+    let api_url = Printf.sprintf fmt normalized in
     let command = Printf.sprintf "curl -k -s \"%s\"" api_url in
     let ic = Core_unix.open_process_in command in
     let response = In_channel.input_all ic in
@@ -76,11 +77,12 @@ let is_valid_word_api word =
 (** Fetches words from Random Word API - single API call for all words
     Random Word API supports length parameter to get words of a specific length
     Returns all words matching the length in a single request (no API key needed) *)
-let fetch_words_from_random_word_api ~word_length =
+let fetch_words_from_random_word_api ?(url_pattern="https://random-word-api.herokuapp.com/word?length=%d&number=10000") word_length =
   try
     (* Random Word API: use length parameter and request a large number of words *)
     (* Request 10000 words to get comprehensive coverage *)
-    let api_url = Printf.sprintf "https://random-word-api.herokuapp.com/word?length=%d&number=10000" word_length in
+    let fmt = Scanf.format_from_string url_pattern "%d" in
+    let api_url = Printf.sprintf fmt word_length in
     let command = Printf.sprintf "curl -k -s \"%s\"" api_url in
     let ic = Core_unix.open_process_in command in
     let response = In_channel.input_all ic in
@@ -112,19 +114,14 @@ let fetch_words_from_random_word_api ~word_length =
       Printf.eprintf "Error calling Random Word API: %s\n" (Exn.to_string e);
       []
 
-(** Fetches words from Random Word API - single API call for all words
-    No API key required - no fallback to local files *)
-let fetch_words_from_api ~word_length =
-  fetch_words_from_random_word_api ~word_length
-
 (** Loads words from Random Word API only - no fallback to local files
     No API key required - returns empty list if API fails *)
-let load_words_from_api ~word_length =
+let load_words_from_api ?url_pattern word_length =
   if word_length < 2 || word_length > 10 then
     raise (Invalid_argument (Printf.sprintf "Word length %d not supported. Must be between 2 and 10." word_length))
   else
     (* Fetch words from Random Word API only - no local file fallback *)
-    fetch_words_from_api ~word_length
+    fetch_words_from_random_word_api ?url_pattern word_length
 
 (** Loads answers from local files
     Answers are always loaded from local files, not from API *)
@@ -139,7 +136,7 @@ let load_answers_from_file ~word_length =
     Returns (words, answers) tuple where:
     - words: loaded from Random Word API only (for solver guesses and user guesses) - no local file fallback
     - answers: loaded from local files (for game answers) *)
-let load_dictionary_by_length_api n =
-  let words = load_words_from_api ~word_length:n in
+let load_dictionary_by_length_api ?url_pattern n =
+  let words = load_words_from_api ?url_pattern n in
   let answers = load_answers_from_file ~word_length:n in
   (words, answers)

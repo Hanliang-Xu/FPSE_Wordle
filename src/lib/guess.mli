@@ -1,11 +1,5 @@
 (** Guess module for Wordle game - provides feedback generation functionality *)
 
-(** Top-level helper functions for direct use *)
-val color_to_string_impl : Feedback.color -> string
-val colors_to_string_impl : Feedback.t -> string
-val to_string_impl : Feedback.feedback -> string
-val is_correct_impl : Feedback.feedback -> bool
-
 (** Module type for Guess modules *)
 module type S = sig
   include module type of Feedback

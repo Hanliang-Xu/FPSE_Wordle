@@ -11,7 +11,7 @@ module Config5 = struct
 end
 
 module Guess5 = Lib.Guess.Make (Config5)
-module Solver5 = Lib.Solver.Make (Guess5)
+module Solver5 = Lib.Solver.Make (Config5) (Guess5)
 
 (** Test create *)
 let test_create_with_words _ =
@@ -132,7 +132,7 @@ module Config3 = struct
 end
 
 module Guess3 = Lib.Guess.Make (Config3)
-module Solver3 = Lib.Solver.Make (Guess3)
+module Solver3 = Lib.Solver.Make (Config3) (Guess3)
 
 let test_solver_3letter _ =
   let word_list = ["cat"; "dog"] in
@@ -148,7 +148,7 @@ module Config5WithDistances = struct
 end
 
 module Guess5WithDistances = Lib.Guess.Make (Config5WithDistances)
-module Solver5WithDistances = Lib.Solver.Make (Guess5WithDistances)
+module Solver5WithDistances = Lib.Solver.Make (Config5WithDistances) (Guess5WithDistances)
 
 let test_solver_respects_distance_hints _ =
   (* Test that solver filters candidates based on distance hints *)
@@ -185,7 +185,7 @@ module Config5Binary = struct
 end
 
 module Guess5Binary = Lib.Guess.Make (Config5Binary)
-module Solver5Binary = Lib.Solver.Make (Guess5Binary)
+module Solver5Binary = Lib.Solver.Make (Config5Binary) (Guess5Binary)
 
 let test_solver_binary_mode _ =
   (* Provide multiple candidates so some remain after filtering *)
