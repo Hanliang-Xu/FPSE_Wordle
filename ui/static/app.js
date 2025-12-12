@@ -7,6 +7,7 @@ class WordleApp {
             wordLength: 5,
             keyboardState: {}, 
             hints: [], 
+            hintUsedInRound: false,
             config: {
                 wordLength: 5,
                 maxGuesses: 6,
@@ -56,13 +57,15 @@ class WordleApp {
                 this.state.gameOver = false;
                 this.state.keyboardState = {};
                 this.state.hints = [];
+                this.state.hintUsedInRound = false;
                 this.state.wordLength = this.state.config.wordLength;
                 
-                this.renderBoard();
+            this.renderBoard();
                 this.renderKeyboard();
                 this.updateStatus("New game started!");
                 this.updateSolverPanel(null);
                 this.updateHintDisplay();
+                this.updateHintControls();
                 
                 // Show/Hide hint controls based on config, even if solver is hidden
                 // Decouple: hint buttons always visible if showHints is enabled, 
@@ -86,14 +89,14 @@ class WordleApp {
             console.error("Failed to start game", e);
         }
     }
-
+    
     async submitGuess() {
         if (this.state.gameOver) return;
         if (this.state.currentGuess.length !== this.state.wordLength) {
             this.updateStatus("Too short!");
             return;
         }
-
+        
         try {
             const res = await fetch('/api/guess', {
                 method: 'POST',
@@ -101,18 +104,20 @@ class WordleApp {
                 body: JSON.stringify({ guess: this.state.currentGuess })
             });
             const data = await res.json();
-
+            
             if (data.status === 'error') {
                 this.updateStatus(data.message);
                 return;
             }
-
+            
             this.state.board.push(data.feedback);
             this.state.currentGuess = '';
+            this.state.hintUsedInRound = false;
             
             this.updateKeyboardState(data.feedback);
             this.renderBoard();
             this.renderKeyboard();
+            this.updateHintControls();
 
             if (data.isWon) {
                 this.state.gameOver = true;
@@ -135,7 +140,15 @@ class WordleApp {
 
     async requestHint(mode) {
         if (this.state.gameOver) return;
+        if (this.state.hintUsedInRound) {
+            this.updateStatus("Only one hint per turn allowed!");
+            return;
+        }
         
+        // Optimistically mark as used to prevent race conditions/double clicks
+        this.state.hintUsedInRound = true;
+        this.updateHintControls();
+
         // Prevent default focus behavior that might cause Enter to re-trigger
         if (document.activeElement) {
             document.activeElement.blur();
@@ -150,6 +163,7 @@ class WordleApp {
             const data = await res.json();
             
             if (data.status === 'success') {
+                // Keep hintUsedInRound as true
                 let hintText = '';
                 if (data.type === 'position') {
                     hintText = `Position ${data.pos + 1}: ${data.letter}`;
@@ -159,12 +173,34 @@ class WordleApp {
                 
                 this.state.hints.push(hintText);
                 this.updateHintDisplay();
+            } else {
+                // Revert if API returned error (e.g. invalid mode)
+                this.state.hintUsedInRound = false;
+                this.updateHintControls();
+                if (data.message) this.updateStatus(data.message);
             }
         } catch (e) {
             console.error("Error requesting hint", e);
+            // Revert on network error
+            this.state.hintUsedInRound = false;
+            this.updateHintControls();
         }
     }
 
+    updateHintControls() {
+        const buttons = document.querySelectorAll('#hintControls button');
+        buttons.forEach(btn => {
+            btn.disabled = this.state.hintUsedInRound || this.state.gameOver;
+            if (btn.disabled) {
+                btn.style.opacity = '0.5';
+                btn.style.cursor = 'not-allowed';
+            } else {
+                btn.style.opacity = '1';
+                btn.style.cursor = 'pointer';
+            }
+        });
+    }
+    
     updateHintDisplay() {
         const container = document.getElementById('hintDisplay');
         if (this.state.hints.length === 0) {
@@ -215,7 +251,7 @@ class WordleApp {
             panel.classList.remove('visible');
             return;
         }
-
+        
         if (data) {
             panel.classList.add('visible');
             document.getElementById('solverHint').textContent = data.solverHint;
