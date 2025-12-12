@@ -98,13 +98,6 @@ The web app seamlessly integrates with the OCaml backend:
 - Statistics persisted in browser localStorage
 - Static files served from `ui/static/`
 
-## Test Coverage
-
-**92.61% coverage (451/487 lines)** with comprehensive test suites covering:
-- All core modules (Config, Dict, Feedback, Game, Guess, Solver, Utils, Hints, UI)
-- Integration tests for functor composition and end-to-end game flow
-- Mocking for stdin/stdout interactions and API error handling
-
 ## Final Project Rubric Alignment
 
 **25% Code Quality**: Excellent FP practices with immutable data structures, strong typing throughout, proper dune configuration with comprehensive build files, well-structured opam file with automatic generation, extensive functor use demonstrating advanced module design, comprehensive `.mli` interfaces, proper error handling with `result` types, consistent coding style following OCaml idioms.
